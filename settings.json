@@ -1,3 +1,8 @@
 {
-  "model": "sonnet"
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "echo Claude Code Active",
+    "padding": 0
+  }
 }
