@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Check Claude Code settings and MCP configuration files",
+    "status": "completed",
+    "activeForm": "Checking Claude Code settings and MCP configuration files"
+  },
+  {
+    "content": "Examine the resume crash issue and potential MCP server conflicts",
+    "status": "in_progress",
+    "activeForm": "Examining the resume crash issue and potential MCP server conflicts"
+  },
+  {
+    "content": "Provide recommendations to fix the crash",
+    "status": "pending",
+    "activeForm": "Providing recommendations to fix the crash"
+  }
+]
