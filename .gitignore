@@ -2,6 +2,8 @@
 shell-snapshots/
 ide/
 statsig/
+todos/
+projects/
 
 # OS generated files
 .DS_Store
