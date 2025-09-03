@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Execute DAG 1: Data Setup - Configure prerequisites and base setup",
+    "status": "in_progress",
+    "activeForm": "Executing DAG 1: Data Setup"
+  },
+  {
+    "content": "Execute DAG 2: Sanitise Test Area - Clean testing stage",
+    "status": "pending",
+    "activeForm": "Executing DAG 2: Sanitise Test Area"
+  },
+  {
+    "content": "Execute DAG 3: Setup Test Data - Create deterministic test data",
+    "status": "pending",
+    "activeForm": "Executing DAG 3: Setup Test Data"
+  }
+]

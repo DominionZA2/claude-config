@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Execute DAG 1: Fifo-01-Data-Setup.dag.json",
+    "status": "in_progress",
+    "activeForm": "Executing DAG 1: Fifo-01-Data-Setup.dag.json"
+  },
+  {
+    "content": "Execute DAG 2: Fifo-02-Sanitise-Test-Area.dag.json",
+    "status": "pending",
+    "activeForm": "Executing DAG 2: Fifo-02-Sanitise-Test-Area.dag.json"
+  },
+  {
+    "content": "Execute DAG 3: Fifo-03-Setup-Test-Data.dag.json",
+    "status": "pending",
+    "activeForm": "Executing DAG 3: Fifo-03-Setup-Test-Data.dag.json"
+  },
+  {
+    "content": "Execute DAG 4: Fifo-04-Validation.dag.json",
+    "status": "pending",
+    "activeForm": "Executing DAG 4: Fifo-04-Validation.dag.json"
+  }
+]

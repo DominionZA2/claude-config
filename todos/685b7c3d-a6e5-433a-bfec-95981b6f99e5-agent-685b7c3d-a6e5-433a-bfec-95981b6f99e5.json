@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Create PatchRequestExtensions class with generic and string overloads",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Create ValidateGrvForPatching method with business rules from UpdateGrvAsync",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update PatchGrvAsync to use pre-validation approach",
+    "status": "completed",
+    "id": "3"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "content": "Implement stock movement creation in CreateStockItemDiscardAsync",
+    "status": "completed",
+    "activeForm": "Implementing stock movement creation in CreateStockItemDiscardAsync"
+  },
+  {
+    "content": "Modify DeleteStockItemDiscardAsync to cleanup related stock movements",
+    "status": "completed",
+    "activeForm": "Modifying DeleteStockItemDiscardAsync to cleanup related stock movements"
+  },
+  {
+    "content": "Create shared wastage percentage service with caching (instance-based, shared across FIFO methods)",
+    "status": "completed",
+    "activeForm": "Creating shared wastage percentage service with caching"
+  },
+  {
+    "content": "Update GrossProfitReportManager to use WastagePercentageService",
+    "status": "completed",
+    "activeForm": "Updating GrossProfitReportManager to use WastagePercentageService"
+  },
+  {
+    "content": "Test GP report with new cache to ensure baseline results match",
+    "status": "completed",
+    "activeForm": "Testing GP report with new cache to ensure baseline results match"
+  },
+  {
+    "content": "Handle store wastage % for bulk quantity conversion to prepped quantity",
+    "status": "completed",
+    "activeForm": "Handling store wastage % for bulk quantity conversion to prepped quantity"
+  },
+  {
+    "content": "Implement cost calculation using FIFO when looking up item",
+    "status": "completed",
+    "activeForm": "Implementing cost calculation using FIFO when looking up item"
+  },
+  {
+    "content": "Fix potential storeId caching bug (after baseline testing)",
+    "status": "pending",
+    "activeForm": "Fixing potential storeId caching bug"
+  },
+  {
+    "content": "Test the enhanced discards stock movement integration",
+    "status": "pending",
+    "activeForm": "Testing the enhanced discards stock movement integration"
+  }
+]

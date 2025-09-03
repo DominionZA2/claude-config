@@ -1,0 +1,37 @@
+[
+  {
+    "content": "Review entire UpdateBuilder codebase for other issues and inconsistencies",
+    "status": "completed",
+    "id": "13"
+  },
+  {
+    "content": "Fix GetOrAdd in constructor - populate caches directly",
+    "status": "pending",
+    "id": "14"
+  },
+  {
+    "content": "Remove unused IsNumericType method",
+    "status": "pending",
+    "id": "15"
+  },
+  {
+    "content": "Consolidate duplicate Map methods",
+    "status": "pending",
+    "id": "16"
+  },
+  {
+    "content": "Remove unnecessary PropertyMappingBuilder complexity",
+    "status": "pending",
+    "id": "17"
+  },
+  {
+    "content": "Extract duplicate DateTime parsing logic",
+    "status": "pending",
+    "id": "18"
+  },
+  {
+    "content": "Standardize exception types",
+    "status": "pending",
+    "id": "19"
+  }
+]

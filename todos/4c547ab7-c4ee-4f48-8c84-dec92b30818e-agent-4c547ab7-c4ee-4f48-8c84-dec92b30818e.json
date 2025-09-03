@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Create GitHub repository for Claude configuration",
+    "status": "completed",
+    "activeForm": "Creating GitHub repository for Claude configuration"
+  },
+  {
+    "content": "Initialize git repo in ~/.claude directory",
+    "status": "completed",
+    "activeForm": "Initializing git repo in ~/.claude directory"
+  },
+  {
+    "content": "Add and commit existing Claude commands",
+    "status": "in_progress",
+    "activeForm": "Adding and committing existing Claude commands"
+  },
+  {
+    "content": "Add remote origin and push to GitHub",
+    "status": "pending",
+    "activeForm": "Adding remote origin and pushing to GitHub"
+  }
+]

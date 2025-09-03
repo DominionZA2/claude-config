@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Execute Step 1: Get theoretical SOH v1 with timestamp validation",
+    "status": "completed",
+    "activeForm": "Executing Step 1: Getting theoretical SOH v1"
+  },
+  {
+    "content": "Execute Step 2: Validate v1 results (opening=100, purchases=100, theoreticalSOH=200)",
+    "status": "completed",
+    "activeForm": "Executing Step 2: Validating v1 results"
+  },
+  {
+    "content": "Execute Step 3: Create and post closing stock take (80kg)",
+    "status": "in_progress",
+    "activeForm": "Executing Step 3: Creating closing stock take"
+  },
+  {
+    "content": "Execute Step 4: Generate GP report and validate multi-layered FIFO",
+    "status": "pending",
+    "activeForm": "Executing Step 4: Generating GP report"
+  },
+  {
+    "content": "Execute Step 5: Validate GP report FIFO calculations",
+    "status": "pending",
+    "activeForm": "Executing Step 5: Validating GP report"
+  },
+  {
+    "content": "Execute Step 6: Create test discard for stock loss testing",
+    "status": "pending",
+    "activeForm": "Executing Step 6: Creating test discard"
+  },
+  {
+    "content": "Execute Step 7: Generate stock loss report",
+    "status": "pending",
+    "activeForm": "Executing Step 7: Generating stock loss report"
+  },
+  {
+    "content": "Execute Step 8: Validate stock loss report FIFO calculations",
+    "status": "pending",
+    "activeForm": "Executing Step 8: Validating stock loss report"
+  }
+]

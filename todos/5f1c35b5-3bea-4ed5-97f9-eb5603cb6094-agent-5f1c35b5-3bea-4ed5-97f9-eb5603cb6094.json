@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Remove hardcoded token and URL from source code",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add environment variable support for HA_URL and HA_TOKEN",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update README with clear installation and configuration instructions",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Test the environment variable configuration",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Commit and push the security fix",
+    "status": "completed",
+    "id": "5"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "content": "Extend PropertyValidationInfo to include ValidationAttribute[] and update cache population",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add ValidateUsingAttributes() method to UpdateBuilder",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Add ValidateIfPresent() method to UpdateBuilder for custom validation",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update PatchGrvItemAsync to use hybrid validation approach",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Add stock item validation when ItemId is in patch request",
+    "status": "pending",
+    "id": "5"
+  },
+  {
+    "content": "Add return GRV quantity limits validation when QuantityGRV is modified",
+    "status": "pending",
+    "id": "6"
+  },
+  {
+    "content": "Update audit timestamp (ValuesUpdatedAt) in PATCH method",
+    "status": "pending",
+    "id": "7"
+  },
+  {
+    "content": "Create property dependency validation for grouped properties",
+    "status": "pending",
+    "id": "8"
+  },
+  {
+    "content": "Build validation error collection system to return multiple validation errors to consumer",
+    "status": "pending",
+    "id": "9"
+  }
+]

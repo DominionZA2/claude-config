@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Execute DAG 2 - Sanitise Test Area",
+    "status": "completed",
+    "activeForm": "Execute DAG 2 - Sanitise Test Area"
+  },
+  {
+    "content": "Execute DAG 3 - Setup Test Data",
+    "status": "pending",
+    "activeForm": "Execute DAG 3 - Setup Test Data"
+  },
+  {
+    "content": "Fix subcount ID issue for store 10810",
+    "status": "in_progress",
+    "activeForm": "Fixing subcount ID issue for store 10810"
+  },
+  {
+    "content": "Execute DAG 4 - FIFO Validation",
+    "status": "pending",
+    "activeForm": "Executing DAG 4 - FIFO Validation"
+  },
+  {
+    "content": "Validate all test results are deterministic",
+    "status": "pending",
+    "activeForm": "Validating all test results are deterministic"
+  }
+]

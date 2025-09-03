@@ -1,0 +1,97 @@
+[
+  {
+    "content": "Extract DateTime parsing to private method",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Integrate RemoveIdProperty with Exclude mechanism",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Consolidate GetPropertyName methods",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Move SetProperty method to static entity cache",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix thread safety for _afterPatchActions",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Rename type compatibility methods for clarity",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Implement size-limited cache with 200 entry limit",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Simplify type compatibility validation to only allow same fundamental types (nullable vs non-nullable ok)",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "HIGH: Consolidate AreTypesMappable and IsValueConvertible into single AreTypesCompatible method",
+    "status": "completed",
+    "id": "9"
+  },
+  {
+    "content": "HIGH: Fix JSON numeric type conversion issue using Convert.ChangeType",
+    "status": "completed",
+    "id": "10"
+  },
+  {
+    "content": "HIGH: Rename ValidateUsingAttributes to PrepareAndValidateProperties",
+    "status": "completed",
+    "id": "11"
+  },
+  {
+    "content": "HIGH: Remove duplicate conversion logic from CreateMultiUpdateExpression",
+    "status": "completed",
+    "id": "12"
+  },
+  {
+    "content": "HIGH: Create TypeExtensions with GetUnderlyingType extension method",
+    "status": "completed",
+    "id": "13"
+  },
+  {
+    "content": "HIGH: Consolidate ExecuteAsync filtering logic into single pass",
+    "status": "completed",
+    "id": "14"
+  },
+  {
+    "content": "HIGH: Fix null safety issue with allowedProperties",
+    "status": "completed",
+    "id": "15"
+  },
+  {
+    "content": "MED: Cache entity properties lookup in ExecuteAsync to avoid duplicate calls",
+    "status": "completed",
+    "id": "16"
+  },
+  {
+    "content": "LOW: Pre-size collections with known capacity",
+    "status": "completed",
+    "id": "17"
+  },
+  {
+    "content": "LOW: Consider making string comparisons case-sensitive for performance",
+    "status": "completed",
+    "id": "18"
+  },
+  {
+    "content": "Refactor PatchBuilder to validate and prepare properties during construction instead of execution",
+    "status": "completed",
+    "id": "19"
+  }
+]

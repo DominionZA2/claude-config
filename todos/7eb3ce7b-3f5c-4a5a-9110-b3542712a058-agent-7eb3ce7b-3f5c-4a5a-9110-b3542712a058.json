@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Convert StockLossReportManager.cs to use GetFifoCostForItem2Async",
+    "status": "completed",
+    "activeForm": "Converting StockLossReportManager.cs to use GetFifoCostForItem2Async"
+  },
+  {
+    "content": "Test converted Stock Loss Report matches baseline",
+    "status": "in_progress",
+    "activeForm": "Testing converted Stock Loss Report matches baseline"
+  },
+  {
+    "content": "Convert ActualUsageCalculator.cs to use GetFifoCostForItem2Async",
+    "status": "pending",
+    "activeForm": "Converting ActualUsageCalculator.cs to use GetFifoCostForItem2Async"
+  },
+  {
+    "content": "Convert TheoreticalStockOnHandManager.cs to use GetFifoCostForItem2Async",
+    "status": "pending",
+    "activeForm": "Converting TheoreticalStockOnHandManager.cs to use GetFifoCostForItem2Async"
+  },
+  {
+    "content": "Convert GrossProfitReportManager.cs to use GetFifoCostForItem2Async",
+    "status": "pending",
+    "activeForm": "Converting GrossProfitReportManager.cs to use GetFifoCostForItem2Async"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Add stock item validation when ItemId is in patch request",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add return GRV quantity limits validation when QuantityGRV is modified",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update audit timestamp (ValuesUpdatedAt) in PATCH method - Implemented ApplyWhenPatched with clean syntax",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Implement ApplyAfterPatch method for related entity updates",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix QuantityFulfilled validation to check against stored QuantityGRV value",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Fix DbContext extraction for ExecuteAfterPatch functionality",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Create property dependency validation for grouped properties",
+    "status": "pending",
+    "id": "5"
+  },
+  {
+    "content": "Build validation error collection system to return multiple validation errors to consumer",
+    "status": "pending",
+    "id": "6"
+  }
+]

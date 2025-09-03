@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Create AI/Runbooks/Stock/ directory structure",
+    "status": "completed"
+  },
+  {
+    "content": "Move existing runbooks to Stock folder",
+    "status": "completed"
+  },
+  {
+    "content": "Create _setup_stock_test_data.md with shared components",
+    "status": "completed"
+  },
+  {
+    "content": "Create comprehensive FIFO testing runbook (fifo.md)",
+    "status": "in_progress"
+  },
+  {
+    "content": "Update existing runbooks to reference shared setup",
+    "status": "pending"
+  }
+]
