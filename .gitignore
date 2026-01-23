@@ -7,7 +7,7 @@ projects/
 
 # Cache and transient data
 cache/
-paste-cache/
+*-cache/
 debug/
 file-history/
 plans/

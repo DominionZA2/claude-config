@@ -1,8 +1,24 @@
 {
-  "model": "sonnet",
+  "permissions": {
+    "allow": [
+      "mcp__mysql-local__list_databases",
+      "mcp__mysql-local__list_tables",
+      "WebSearch",
+      "WebFetch"
+    ]
+  },
+  "model": "opus",
   "statusLine": {
     "type": "command",
-    "command": "echo Claude Code Active",
+    "command": "powershell -NoProfile -File C:\\Users\\msmit\\.claude\\statusline.ps1",
     "padding": 0
+  },
+  "enabledPlugins": {
+    "ralph-wiggum@claude-code-plugins": false,
+    "plugin-dev@claude-code-plugins": true
+  },
+  "alwaysThinkingEnabled": true,
+  "codeStyle": {
+    "commitCoAuthor": false
   }
 }

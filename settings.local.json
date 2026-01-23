@@ -1,8 +1,56 @@
 {
   "permissions": {
     "allow": [
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "Bash(powershell -Command \"$email = [System.Environment]::GetEnvironmentVariable\\(''JIRA_EMAIL'', ''User''\\); $token = [System.Environment]::GetEnvironmentVariable\\(''JIRA_TOKEN'', ''User''\\); $headers = @{ ''Authorization'' = \"\"Bearer $token\"\" }; try { $r = Invoke-RestMethod -Uri ''https://api.bitbucket.org/2.0/repositories/cosoft-ondemand/cloud_backend/pullrequests/2276'' -Headers $headers; $r | ConvertTo-Json -Depth 3 } catch { $_Exception.Message }\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"$env:USERPROFILE\\\\.cursor\\\\scripts\\\\test_bitbucket.ps1\")",
+      "mcp__Cosoft__search_grafana_logs",
+      "WebSearch",
+      "Bash(findstr:*)",
+      "WebFetch(domain:github.com)",
+      "mcp__atlassian__getAccessibleAtlassianResources",
+      "mcp__github__list_commits",
+      "mcp__bitbucket__bb_get",
+      "WebFetch(domain:support.atlassian.com)",
+      "Bash(npx:*)",
+      "Bash(npm search:*)",
+      "Bash(set MYSQL_HOST=localhost)",
+      "Bash(set MYSQL_PORT=3306:*)",
+      "Bash(set MYSQL_DATABASE=aura_cloud_brand)",
+      "Bash(set MYSQL_USER=aura:*)",
+      "Bash(set MYSQL_PASSWORD=P@ssw0rd1)",
+      "Bash(powershell -Command \"Test-NetConnection -ComputerName localhost -Port 3306\")",
+      "Bash(cmd /c \"set MYSQL_HOST=localhost&& set MYSQL_PORT=3306&& set MYSQL_DB=aura_cloud_brand&& set MYSQL_USER=aura&& set MYSQL_PASS=P@ssw0rd1&& npx -y @benborla29/mcp-server-mysql\")",
+      "Bash(cmd /c \"set MYSQL_HOST=localhost&& set MYSQL_PORT=3306&& set MYSQL_DB=aura_cloud_brand&& set MYSQL_USER=aura&& set MYSQL_PASS=P@ssw0rd1&& set DEBUG=*&& npx -y @benborla29/mcp-server-mysql\")",
+      "Bash(powershell -Command \"& { $conn = New-Object MySql.Data.MySqlClient.MySqlConnection; $conn.ConnectionString = ''server=localhost;port=3306;database=aura_cloud_brand;uid=aura;password=P@ssw0rd1''; try { $conn.Open\\(\\); Write-Host ''Connection successful''; $conn.Close\\(\\) } catch { Write-Host \"\"Error: $_\" } }\")",
+      "Bash(node:*)",
+      "Bash(cmd /c \"echo {\"\"jsonrpc\"\":\"\"2.0\"\",\"\"id\"\":1,\"\"method\"\":\"\"initialize\"\",\"\"params\"\":{\"\"protocolVersion\"\":\"\"2024-11-05\"\",\"\"capabilities\"\":{},\"\"clientInfo\"\":{\"\"name\"\":\"\"test\"\",\"\"version\"\":\"\"1.0\"\"}}} | set MYSQL_HOST=localhost&& set MYSQL_PORT=3306&& set MYSQL_DB=aura_cloud_brand&& set MYSQL_USER=aura&& set MYSQL_PASS=P@ssw0rd1&& npx -y @benborla29/mcp-server-mysql\")",
+      "Bash(where npx:*)",
+      "Bash(where:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"Start-Job -ScriptBlock { powershell -ExecutionPolicy Bypass -File C:\\\\Users\\\\msmit\\\\test_mysql_mcp.ps1 } | Wait-Job -Timeout 10 | Receive-Job\")",
+      "Bash(powershell -Command \"Get-Service | Where-Object { $_Name -like ''*mysql*'' -or $_DisplayName -like ''*mysql*'' } | Select-Object Name, Status, DisplayName\")",
+      "Bash(npm install:*)",
+      "Bash(pip search:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m mysql_mcp_server:*)",
+      "Bash(mysql-mcp-server:*)",
+      "Bash(npm view:*)",
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Expand-Archive -Path ''C:\\\\Tools\\\\mysql-mcp-server.zip'' -DestinationPath ''C:\\\\Tools'' -Force; Get-ChildItem ''C:\\\\Tools\\\\mysql-mcp-server*''\")",
+      "mcp__mysql-local__run_query",
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "Bash(grep:*)",
+      "mcp__github__issue_read"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "atlassian",
+    "github",
+    "Cosoft",
+    "MCP_DOCKER",
+    "homeassistant-chatgpt"
+  ]
 }
