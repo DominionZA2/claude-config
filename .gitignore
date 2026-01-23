@@ -5,6 +5,18 @@ statsig/
 todos/
 projects/
 
+# Cache and transient data
+cache/
+paste-cache/
+debug/
+file-history/
+plans/
+*.jsonl
+*-cache.json
+plugins/cache/
+plugins/marketplaces/
+plugins/known_marketplaces.json
+
 # Credentials (session-specific, not for sharing)
 .credentials.json
 
