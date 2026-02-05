@@ -1,10 +1,38 @@
 {
   "permissions": {
     "allow": [
+      "Task",
       "mcp__mysql-local__list_databases",
       "mcp__mysql-local__list_tables",
       "WebSearch",
-      "WebFetch"
+      "WebFetch",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git reset:*)",
+      "Bash(del \"c:\\\\Source\\\\v2-portal\\\\app\\\\[locale]\\\\brand\\\\stock\\\\items\\\\components\\\\bulk-actions\\\\bulk-tax-assignment-modal.tsx\")",
+      "Bash(git revert:*)",
+      "Bash(git fetch:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git restore:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(npm run lint:*)",
+      "Bash(git push:*)",
+      "mcp__bitbucket__bb_post",
+      "Bash(git show:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\msmit\\.claude\\plugins\\cache\\supermemory-plugins",
+      "C:\\Users\\msmit\\.claude\\plugins\\marketplaces\\supermemory-plugins",
+      "C:\\Source\\cloud_backend\\Aura.Microservice.Menu",
+      "C:\\Source\\cloud_backend\\CloudGatewayApi\\Controllers",
+      "C:\\Source\\cloud_backend\\Aura.CloudBusinessLogic",
+      "c:\\Source\\v2-portal\\app\\[locale]\\brand\\stock\\items\\components\\bulk-actions",
+      "c:\\Source\\v2-portal",
+      "C:\\Source\\cloud_backend\\Aura.Database.Context.Brand\\Partials",
+      "C:\\Source\\cloud_backend\\AuraCloudInterface\\PrinterRouting",
+      "C:\\Source\\cloud_backend\\Aura.PrinterRouting.Manager"
     ]
   },
   "model": "opus",
@@ -15,7 +43,8 @@
   },
   "enabledPlugins": {
     "ralph-wiggum@claude-code-plugins": false,
-    "plugin-dev@claude-code-plugins": true
+    "plugin-dev@claude-code-plugins": true,
+    "claude-supermemory@supermemory-plugins": true
   },
   "alwaysThinkingEnabled": true,
   "codeStyle": {

@@ -1,4 +1,4 @@
-# Jira Task Code Review with Codex Command
+# Task Code Review with Codex Command
 
 Perform iterative code review deliberation between AI and Codex over actual implementation changes, implement agreed recommendations, and verify final code quality.
 
@@ -6,11 +6,11 @@ Perform iterative code review deliberation between AI and Codex over actual impl
 
 Initiates an iterative code review and deliberation system where the AI and Codex review actual implementation changes, deliberate over recommendations, implement agreed changes, and verify final code quality.
 
-**Usage:** `/cosoft-jira-05-deliberate-code-review-codex {TASK_NUMBER} [optional additional prompt]`
+**Usage:** `/deliberate-code-review-with-codex {TASK_NUMBER} [optional additional prompt]`
 
 - The task number is required (e.g., "ACR-678" or "API-708")
 - An optional additional prompt can be provided after the task number to give the AI extra instructions to follow during code review
-- Example: `/cosoft-jira-05-deliberate-code-review-codex ACR-678 Pay special attention to performance implications`
+- Example: `/deliberate-code-review-with-codex ACR-678 Pay special attention to performance implications`
 
 The system works through multiple phases:
 
@@ -114,14 +114,14 @@ When this command is invoked with a task number:
 - Store `ADDITIONAL_PROMPT` for use throughout deliberation (if provided)
 - Determine the project root and verify the task folder exists:
   - Search for the task folder `.temp/{TASK_NUMBER}/` in the workspace(s)
-  - If the folder does not exist, inform the user: "Task folder `.temp/{TASK_NUMBER}/` not found. Please run `/cosoft-jira-01-setup {TASK_NUMBER}` first."
+  - If the folder does not exist, inform the user: "Task folder `.temp/{TASK_NUMBER}/` not found. Please run `/setup-task {TASK_NUMBER} {SUMMARY}` first."
   - Once found, extract the PROJECT ROOT from the task folder path:
     - If task folder is at `/path/to/project/.temp/{TASK_NUMBER}/`, then PROJECT ROOT is `/path/to/project/`
     - The PROJECT ROOT is the parent directory of the `.temp` folder
   - Check if the main task file exists: `.temp/{TASK_NUMBER}/{TASK_NUMBER}-task-details.md` (relative to PROJECT ROOT)
   - Check if the implementation plan file exists: `.temp/{TASK_NUMBER}/{TASK_NUMBER}-implementation-plan.md`
   - If the task file does not exist, inform the user and halt execution
-  - If the implementation plan file does not exist, inform the user: "No `{TASK_NUMBER}-implementation-plan.md` file found. Please run `/cosoft-jira-02-plan {TASK_NUMBER}` first to create an implementation plan."
+  - If the implementation plan file does not exist, inform the user: "No `{TASK_NUMBER}-implementation-plan.md` file found. Please run `/plan-task {TASK_NUMBER}` first to create an implementation plan."
 - Get git diff to identify changed files:
   - Determine BASE_BRANCH: Try `master` first, if it doesn't exist try `develop`, if neither exists use current branch
   - From PROJECT ROOT, run: `git diff {BASE_BRANCH} --name-only`
@@ -222,7 +222,7 @@ When this command is invoked with a task number:
   - If Round > 1: Reference previous round, explain your response to Codex's recommendations, and ask for Codex's thoughts on your reasoning
 - Construct the Codex prompt:
   - "Read the following files:"
-  - "- `.temp/{TASK_NUMBER}/{TASK_NUMBER}-task-details.md` (the original Jira task)"
+  - "- `.temp/{TASK_NUMBER}/{TASK_NUMBER}-task-details.md` (the task details)"
   - "- `.temp/{TASK_NUMBER}/{TASK_NUMBER}-implementation-plan.md` (the implementation plan)"
   - "- `.temp/{TASK_NUMBER}/codereview.md` (the code review recommendations)"
   - "- `.temp/{TASK_NUMBER}/deliberation.md` (our deliberation history)"
@@ -422,13 +422,13 @@ When code review completes (consensus or limit), display:
   - Code Review: `.temp/{TASK_NUMBER}/codereview.md`
   - Deliberation: `.temp/{TASK_NUMBER}/deliberation.md`
 - Do NOT display raw Codex responses
-- When consensus is reached, finish with a success line that points to the final hand-off, e.g. `✅ Code review complete. Next step: merge & release changes (Codex Jira workflow complete)`
+- When consensus is reached, finish with a success line that points to the final hand-off, e.g. `✅ Code review complete. Next step: merge & release changes (workflow complete)`
 
 ### ERROR HANDLING
 
 - If task number not provided: Ask the user for it
-- If task folder not found: Inform user: "Task folder `.temp/{TASK_NUMBER}/` not found. Please run `/cosoft-jira-01-setup {TASK_NUMBER}` first." and STOP
-- If `{TASK_NUMBER}-implementation-plan.md` doesn't exist: Inform user: "No `{TASK_NUMBER}-implementation-plan.md` file found. Please run `/cosoft-jira-02-plan {TASK_NUMBER}` first to create an implementation plan." and STOP
+- If task folder not found: Inform user: "Task folder `.temp/{TASK_NUMBER}/` not found. Please run `/setup-task {TASK_NUMBER} {SUMMARY}` first." and STOP
+- If `{TASK_NUMBER}-implementation-plan.md` doesn't exist: Inform user: "No `{TASK_NUMBER}-implementation-plan.md` file found. Please run `/plan-task {TASK_NUMBER}` first to create an implementation plan." and STOP
 - If no changed files found: Inform user: "No changed files found. Ensure implementation has been completed." and STOP
 - If deliberation.md exists but is malformed: Try to parse best-effort, default to Round 1 if parsing fails
 - If Codex returns empty response: Treat as error, inform user: "Codex analysis failed. Error: {error message}" and STOP

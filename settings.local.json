@@ -41,7 +41,12 @@
       "Bash(dir:*)",
       "Bash(test:*)",
       "Bash(grep:*)",
-      "mcp__github__issue_read"
+      "mcp__github__issue_read",
+      "Bash(powershell:*)",
+      "mcp__github__get_file_contents",
+      "Bash(claude plugin marketplace add:*)",
+      "Bash(claude plugin install claude-supermemory)",
+      "Bash(setx:*)"
     ],
     "deny": []
   },
