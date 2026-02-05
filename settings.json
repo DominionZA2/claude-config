@@ -20,7 +20,8 @@
       "Bash(npm run lint:*)",
       "Bash(git push:*)",
       "mcp__bitbucket__bb_post",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(git merge:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude\\plugins\\cache\\supermemory-plugins",
