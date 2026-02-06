@@ -10,17 +10,10 @@
       "mcp__bitbucket__bb_post"
     ],
     "additionalDirectories": [
-      "C:\\Users\\msmit\\.claude\\plugins\\cache\\supermemory-plugins",
-      "C:\\Users\\msmit\\.claude\\plugins\\marketplaces\\supermemory-plugins",
-      "C:\\Source\\cloud_backend\\Aura.Microservice.Menu",
-      "C:\\Source\\cloud_backend\\CloudGatewayApi\\Controllers",
-      "C:\\Source\\cloud_backend\\Aura.CloudBusinessLogic",
-      "c:\\Source\\v2-portal\\app\\[locale]\\brand\\stock\\items\\components\\bulk-actions",
-      "c:\\Source\\v2-portal",
-      "C:\\Source\\cloud_backend\\Aura.Database.Context.Brand\\Partials",
-      "C:\\Source\\cloud_backend\\AuraCloudInterface\\PrinterRouting",
-      "C:\\Source\\cloud_backend\\Aura.PrinterRouting.Manager",
-      "/Users/michaelsmit/Backups/mysql"
+      "C:\\Users\\msmit\\.claude",
+      "C:\\Source"
+      
+      
     ]
   },
   "statusLine": {
