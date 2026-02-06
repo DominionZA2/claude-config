@@ -17,8 +17,12 @@ plugins/cache/
 plugins/marketplaces/
 plugins/known_marketplaces.json
 
-# Credentials (session-specific, not for sharing)
+# Credentials and environment files (contain secrets)
 .credentials.json
+*.env
+
+# Downloads / binaries
+downloads/
 
 # OS generated files
 .DS_Store

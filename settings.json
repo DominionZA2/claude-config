@@ -2,26 +2,12 @@
   "permissions": {
     "allow": [
       "Task",
+      "Bash",
       "mcp__mysql-local__list_databases",
       "mcp__mysql-local__list_tables",
       "WebSearch",
       "WebFetch",
-      "Bash(git checkout:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git reset:*)",
-      "Bash(del \"c:\\\\Source\\\\v2-portal\\\\app\\\\[locale]\\\\brand\\\\stock\\\\items\\\\components\\\\bulk-actions\\\\bulk-tax-assignment-modal.tsx\")",
-      "Bash(git revert:*)",
-      "Bash(git fetch:*)",
-      "Bash(npx tsc:*)",
-      "Bash(git restore:*)",
-      "Bash(dotnet build:*)",
-      "Bash(dotnet restore:*)",
-      "Bash(npm run lint:*)",
-      "Bash(git push:*)",
-      "mcp__bitbucket__bb_post",
-      "Bash(git show:*)",
-      "Bash(git merge:*)"
+      "mcp__bitbucket__bb_post"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude\\plugins\\cache\\supermemory-plugins",
@@ -33,10 +19,10 @@
       "c:\\Source\\v2-portal",
       "C:\\Source\\cloud_backend\\Aura.Database.Context.Brand\\Partials",
       "C:\\Source\\cloud_backend\\AuraCloudInterface\\PrinterRouting",
-      "C:\\Source\\cloud_backend\\Aura.PrinterRouting.Manager"
+      "C:\\Source\\cloud_backend\\Aura.PrinterRouting.Manager",
+      "/Users/michaelsmit/Backups/mysql"
     ]
   },
-  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "powershell -NoProfile -File C:\\Users\\msmit\\.claude\\statusline.ps1",
