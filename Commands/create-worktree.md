@@ -71,6 +71,12 @@ When invoked (example: `/create-worktree feature/my-branch`):
      git submodule update --init --recursive
      ```
      Report success or failure. On failure, surface the error and stop.
+   - Install dependencies (node_modules is gitignored and not shared between worktrees):
+     ```
+     cd "{worktreePath}"
+     npm install
+     ```
+     Report success or failure. On failure, surface the error but continue to the summary.
 10. Present a summary including:
     - Branch used or created
     - Worktree path
