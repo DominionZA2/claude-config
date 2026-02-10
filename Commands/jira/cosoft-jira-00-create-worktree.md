@@ -4,24 +4,17 @@ Automate Jira issue lookup, branch discovery or creation, and git worktree provi
 
 ## How to Setup
 
-This command is self-contained; it talks to Jira directly through the helper at `%USERPROFILE%\.cursor/scripts/jira_fetch.py`. Prerequisites:
+This command is self-contained; it talks to Jira directly through the helper at `~/.claude/scripts/jira_fetch.py`. Prerequisites:
 
-1. The helper script must exist. If `%USERPROFILE%\.cursor/scripts/jira_fetch.py` is missing, stop and instruct the user to restore the scripts folder or pull the repository.
-2. Jira credentials must be stored as **User-scoped** environment variables. At runtime, load them into the current PowerShell session:
-   ```powershell
-   $env:JIRA_URL   = [System.Environment]::GetEnvironmentVariable('JIRA_URL', 'User')
-   $env:JIRA_EMAIL = [System.Environment]::GetEnvironmentVariable('JIRA_EMAIL', 'User')
-   $env:JIRA_TOKEN = [System.Environment]::GetEnvironmentVariable('JIRA_TOKEN', 'User')
+1. The helper script must exist at `~/.claude/scripts/jira_fetch.py`. If missing, stop and instruct the user to restore it.
+2. Jira credentials are stored in `~/.claude/jira.env`. At runtime, source them into the current shell:
+   ```bash
+   source ~/.claude/jira.env
    ```
-   - If any variable is blank, print `Missing Jira environment variables:` followed by the missing entries. Provide explicit commands so the user can set them permanently:
-     ```powershell
-     [System.Environment]::SetEnvironmentVariable('JIRA_URL', 'https://cosoft.atlassian.net', 'User')
-     [System.Environment]::SetEnvironmentVariable('JIRA_EMAIL', 'your-email@company.com', 'User')
-     [System.Environment]::SetEnvironmentVariable('JIRA_TOKEN', 'your-api-token', 'User')
-     ```
+   - If any variable (`JIRA_URL`, `JIRA_EMAIL`, `JIRA_TOKEN`) is blank after sourcing, print `Missing Jira environment variables:` followed by the missing entries. Instruct the user to edit `~/.claude/jira.env` and populate the values.
      Include a clickable link to generate tokens: `[Get Jira API Token](https://id.atlassian.com/manage-profile/security/api-tokens)`
-   - After setting the variables, instruct the user to restart Cursor or PowerShell so the new values load, then stop the command.
-3. Python 3 must be available on PATH (Cursor bundles one by default). If `python --version` fails, stop and tell the user to install Python 3.
+   - After updating the env file, instruct the user to restart the session so the new values load, then stop the command.
+3. Python 3 must be available on PATH. If `python3 --version` fails, stop and tell the user to install Python 3.
 
 ## What this command does
 
@@ -36,14 +29,15 @@ This command is self-contained; it talks to Jira directly through the helper at 
 When invoked (example: `/cosoft-create-worktree ACR-678`):
 
 1. Parse the Jira key from the input. If missing, ask the user for it.
-2. Load the Jira environment variables into the current shell exactly as shown in the setup section. If any value is empty after loading, list the missing variable(s), tell the user to set them using the PowerShell commands above, and stop.
+2. Load the Jira environment variables by running `source ~/.claude/jira.env`. If any value is empty after loading, list the missing variable(s), tell the user to edit `~/.claude/jira.env`, and stop.
 3. Fetch the Jira issue directly (no references to other commands):
-   - Resolve the shared Cursor folder (`$env:USERPROFILE\.cursor`) and confirm that `$env:USERPROFILE\.cursor/scripts/jira_fetch.py` exists. If not, stop with an explicit error.
+   - Confirm that `~/.claude/scripts/jira_fetch.py` exists. If not, stop with an explicit error.
+   - Source `~/.claude/jira.env` to load credentials.
    - Determine the project root (workspace containing `.temp`). Do NOT create `.temp/{JIRA_KEY}` at this stage since `--metadata-only` is used and no files will be downloaded.
    - Execute (note the `--metadata-only` flag to skip attachment downloads):
-     ```powershell
+     ```bash
      cd {PROJECT_ROOT}
-     python "$env:USERPROFILE\.cursor/scripts/jira_fetch.py" "{JIRA_KEY}" ".temp/{JIRA_KEY}" --metadata-only
+     python3 ~/.claude/scripts/jira_fetch.py "{JIRA_KEY}" ".temp/{JIRA_KEY}" --metadata-only
      ```
      Capture stdout (JSON) and stderr.
    - If the script exits non-zero or stderr is non-empty, display the error (including stderr text) and stop. Remind the user to verify `JIRA_URL`, `JIRA_EMAIL`, and `JIRA_TOKEN`.
@@ -106,8 +100,8 @@ When invoked (example: `/cosoft-create-worktree ACR-678`):
     - Jira key with summary
     - Branch used or created
     - Worktree path
+    - A clickable VS Code link to open the worktree folder: `[Open in VS Code](vscode://file/{worktreePath})`
     - Any remaining manual actions (if applicable)
-    - Reminder to open the new folder in Cursor or VS Code
 
-If any step fails (missing Jira MCP, invalid issue, git errors), report the problem and stop without attempting subsequent actions. Never assume branch names or IDs; rely on actual outputs or explicit user input.
+If any step fails (missing script, invalid issue, git errors), report the problem and stop without attempting subsequent actions. Never assume branch names or IDs; rely on actual outputs or explicit user input.
 

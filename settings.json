@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Task",
@@ -7,18 +10,18 @@
       "mcp__mysql-local__list_tables",
       "WebSearch",
       "WebFetch",
-      "mcp__bitbucket__bb_post"
+      "mcp__bitbucket__bb_post",
+      "Read(//Users/michaelsmit/source/v2-portal/**)",
+      "Read(//Users/michaelsmit/Source/v2-portal/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
       "C:\\Source"
-      
-      
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "powershell -NoProfile -File C:\\Users\\msmit\\.claude\\statusline.ps1",
+    "command": "python3 ~/.claude/scripts/statusline.py",
     "padding": 0
   },
   "enabledPlugins": {
@@ -27,7 +30,9 @@
     "claude-supermemory@supermemory-plugins": true
   },
   "alwaysThinkingEnabled": true,
-  "codeStyle": {
-    "commitCoAuthor": false
+  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }

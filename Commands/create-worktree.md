@@ -74,8 +74,8 @@ When invoked (example: `/create-worktree feature/my-branch`):
 10. Present a summary including:
     - Branch used or created
     - Worktree path
+    - A clickable VS Code link to open the worktree folder: `[Open in VS Code](vscode://file/{worktreePath})`
     - Any remaining manual actions (if applicable)
-    - Reminder to open the new folder in Cursor or VS Code
 
 If any step fails (git errors), report the problem and stop without attempting subsequent actions. Never assume branch names or IDs; rely on actual outputs or explicit user input.
 

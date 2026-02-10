@@ -33,6 +33,14 @@ downloads/
 ehthumbs.db
 Thumbs.db
 
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude Code runtime state
+tasks/
+
 # Temporary files
 *.tmp
 *.temp

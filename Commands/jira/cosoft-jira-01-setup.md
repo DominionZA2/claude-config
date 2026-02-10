@@ -33,21 +33,20 @@ When this command is invoked:
 - Create .temp folder in PROJECT ROOT if it does not exist
 - Create .temp/{TASK_NUMBER}/ folder if it does not exist
 - Determine the full path to the task folder: {PROJECT_ROOT}/.temp/{TASK_NUMBER}/
-- Determine the shared Cursor home directory (global tooling lives at %USERPROFILE%\.cursor).
+- The Claude home directory for global tooling is `~/.claude`.
 
 ### LOAD ENVIRONMENT VARIABLES
 
-- **CRITICAL:** Before executing Python, ensure environment variables are available in the current session:
-  - Load permanent environment variables into the current session:
-    - $env:JIRA_URL = [System.Environment]::GetEnvironmentVariable("JIRA_URL", "User")
-    - $env:JIRA_EMAIL = [System.Environment]::GetEnvironmentVariable("JIRA_EMAIL", "User")
-    - $env:JIRA_TOKEN = [System.Environment]::GetEnvironmentVariable("JIRA_TOKEN", "User")
-  - If any of these are empty/null, inform the user that the environment variables need to be set permanently first
+- **CRITICAL:** Before executing Python, source the Jira credentials into the current session:
+  ```bash
+  source ~/.claude/jira.env
+  ```
+  - If any of `JIRA_URL`, `JIRA_EMAIL`, `JIRA_TOKEN` are empty after sourcing, inform the user to edit `~/.claude/jira.env` and populate the values.
 
 ### EXECUTE PYTHON SCRIPT
 
-- Execute the Python script (omit --metadata-only so attachments are downloaded): python $env:USERPROFILE\.cursor/scripts/jira_fetch.py {TASK_NUMBER} {FULL_FOLDER_PATH}
-  - $env:USERPROFILE\.cursor is the shared Cursor config folder that exists regardless of workspace
+- Execute the Python script (omit --metadata-only so attachments are downloaded): python3 ~/.claude/scripts/jira_fetch.py {TASK_NUMBER} {FULL_FOLDER_PATH}
+  - `~/.claude` is the shared Claude config folder that exists regardless of workspace
   - {FULL_FOLDER_PATH} is the absolute path to .temp/{TASK_NUMBER}/
 - Capture the script stdout output (JSON)
 - Capture the script stderr output (for errors)
@@ -72,7 +71,7 @@ When this command is invoked:
 - For each unique referenced task key (excluding the primary {TASK_NUMBER}):
   - Create a dedicated subfolder for the linked task: .temp/{TASK_NUMBER}/{LINKED_TASK}/ (all linked-task markdown plus downloaded attachments belong here to keep the root folder uncluttered)
   - Determine the linked-task details path: .temp/{TASK_NUMBER}/{LINKED_TASK}/{LINKED_TASK}-task-details.md
-  - Run the Python script pointing at that subfolder (still without --metadata-only to download attachments into that folder): python $env:USERPROFILE\.cursor/scripts/jira_fetch.py {LINKED_TASK} {FULL_FOLDER_PATH}/{LINKED_TASK}
+  - Run the Python script pointing at that subfolder (still without --metadata-only to download attachments into that folder): python3 ~/.claude/scripts/jira_fetch.py {LINKED_TASK} {FULL_FOLDER_PATH}/{LINKED_TASK}
   - On success, parse the JSON and create a task-details markdown file (same structure as the main task: Summary, Description, Comments, Attachments, Links)
   - Capture the linked task status (e.g., To Do, In Progress, Done) so the main file can flag unresolved dependencies
   - If the fetch fails, note the error and continue (the main setup file should document that the linked task could not be retrieved)
