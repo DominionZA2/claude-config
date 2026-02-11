@@ -4,6 +4,10 @@ import subprocess
 import os
 import json
 from pathlib import Path
+import site
+if not site.ENABLE_USER_SITE:
+    site.ENABLE_USER_SITE = True
+    site.addsitedir(site.getusersitepackages())
 
 
 def install_dependencies(metadata_only=False):
