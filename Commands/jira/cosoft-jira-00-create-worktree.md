@@ -96,12 +96,12 @@ When invoked (example: `/cosoft-create-worktree ACR-678`):
       git submodule update --init --recursive
       ```
       Surface any errors from the submodule update; if it fails, instruct the user to rerun the command manually inside the worktree.
-    - Install dependencies (node_modules is gitignored and not shared between worktrees):
-      ```
-      cd "{worktreePath}"
-      npm install
-      ```
-      Report success or failure. On failure, surface the error but continue to the summary.
+    - Install dependencies (detect project type and run the appropriate command):
+      - Check for marker files in the worktree root to determine the project type:
+        - If `package.json` exists → run `npm install`
+        - If `*.sln` or `*.csproj` exists → run `dotnet restore`
+        - If none of the above exist → skip dependency installation and report "No recognised dependency manifest found; skipping dependency install."
+      - Report success or failure. On failure, surface the error but continue to the summary.
 11. Present a summary including:
     - Jira key with summary
     - Branch used or created
