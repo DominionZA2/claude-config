@@ -96,6 +96,14 @@ When invoked (example: `/cosoft-create-worktree ACR-678`):
       git submodule update --init --recursive
       ```
       Surface any errors from the submodule update; if it fails, instruct the user to rerun the command manually inside the worktree.
+    - Copy VS Code workspace settings from the source project:
+      - Check if a `.vscode` directory exists in the project root (the main repo, not the worktree).
+      - If it exists, copy it into the worktree root:
+        ```
+        cp -R "{projectRoot}/.vscode" "{worktreePath}/.vscode"
+        ```
+        Report which files were copied (e.g., `launch.json`, `tasks.json`, `settings.json`).
+      - If `.vscode` does not exist in the project root, skip this step silently.
     - Install dependencies (detect project type and run the appropriate command):
       - Check for marker files in the worktree root to determine the project type:
         - If `package.json` exists → run `npm install`
