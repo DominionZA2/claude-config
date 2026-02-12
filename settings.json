@@ -18,11 +18,14 @@
       "mcp__bitbucket__bb_post",
       "Read(//Users/michaelsmit/source/v2-portal/**)",
       "Read(//Users/michaelsmit/Source/v2-portal/**)",
-      "Read(//Users/michaelsmit/.claude/**)"
+      "Read(//Users/michaelsmit/.claude/**)",
+      "Read(//Users/michaelsmit/Library/Application Support/Code/User/**)",
+      "Read(//Users/michaelsmit/Source/cloud_backend/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
-      "C:\\Source"
+      "C:\\Source",
+      "/Users/michaelsmit/Library/Application Support/Code/User"
     ]
   },
   "statusLine": {
