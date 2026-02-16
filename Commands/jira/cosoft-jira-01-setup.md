@@ -79,6 +79,11 @@ When this command is invoked:
 
 ### BRANCH STATUS ANALYSIS
 
+- **Worktree detection (run first):**
+  - Check if the project root is a git worktree by running `git rev-parse --is-inside-work-tree` and `git worktree list` from the project root.
+  - If the project root appears as a worktree entry (i.e., it is listed in `git worktree list` but is NOT the main working tree), then we are inside a worktree.
+  - **If inside a worktree: skip the entire branch status analysis.** In the final markdown, write under "## Linked Branch Status": "Project is running inside a git worktree. Branch status analysis skipped."
+  - Only proceed with the steps below if we are NOT in a worktree.
 - While processing each linked task, inspect its description, comments, and attachments for Git branch references:
   - Look for common patterns such as feature/..., bugfix/..., dev/..., or {PROJECT_KEY}-xxx branches using regex like ([A-Za-z0-9._/-]+/[A-Za-z0-9._-]+) and also {TASK_KEY}[A-Za-z0-9._/-]* branch names.
   - Record branch names along with the linked task that mentioned them.
