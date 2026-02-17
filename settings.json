@@ -20,12 +20,19 @@
       "Read(//Users/michaelsmit/Source/v2-portal/**)",
       "Read(//Users/michaelsmit/.claude/**)",
       "Read(//Users/michaelsmit/Library/Application Support/Code/User/**)",
-      "Read(//Users/michaelsmit/Source/cloud_backend/**)"
+      "Read(//Users/michaelsmit/Source/cloud_backend/**)",
+      "Read(//Users/michaelsmit/source/cloud_reports/Scripts/**)",
+      "Read(//Users/michaelsmit/Source/cloud_reports/Scripts/**)",
+      "Read(//Users/michaelsmit/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
       "C:\\Source",
-      "/Users/michaelsmit/Library/Application Support/Code/User"
+      "/Users/michaelsmit/Library/Application Support/Code/User",
+      "/Users/michaelsmit/source/cloud_reports/Scripts",
+      "/Users/michaelsmit/Source/cloud_reports/Scripts",
+      "/Users/michaelsmit/source/cloud_reports",
+      "/Users/michaelsmit/Source/cloud_reports"
     ]
   },
   "statusLine": {
@@ -38,5 +45,6 @@
     "plugin-dev@claude-code-plugins": true,
     "claude-supermemory@supermemory-plugins": true
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "skipDangerousModePermissionPrompt": true
 }
