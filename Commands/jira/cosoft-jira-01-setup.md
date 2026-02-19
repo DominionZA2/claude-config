@@ -34,6 +34,11 @@ When this command is invoked:
 - Create .temp/{TASK_NUMBER}/ folder if it does not exist
 - Determine the full path to the task folder: {PROJECT_ROOT}/.temp/{TASK_NUMBER}/
 - The Claude home directory for global tooling is `~/.claude`.
+- **Workspace mode detection:**
+  - Run `git rev-parse --is-inside-work-tree` from PROJECT ROOT
+  - **If it IS a git repo:** Set `WORKSPACE_MODE` to `false` (single-project mode)
+  - **If it is NOT a git repo (command fails/errors):** Scan immediate subdirectories of PROJECT ROOT for git repos (run `git rev-parse --is-inside-work-tree` in each). If any subdirectory is a git repo, set `WORKSPACE_MODE` to `true` (multi-repo workspace). Store the list of git sub-repo directory names as `GIT_REPOS`.
+  - If neither the root nor any subdirectories are git repos, set `WORKSPACE_MODE` to `false` and note that no git features will be available
 
 ### LOAD ENVIRONMENT VARIABLES
 
@@ -79,7 +84,10 @@ When this command is invoked:
 
 ### BRANCH STATUS ANALYSIS
 
-- **Worktree detection (run first):**
+- **Workspace mode check (run first):**
+  - If `WORKSPACE_MODE` is `true`: skip the entire branch status analysis. In the final markdown, write under "## Linked Branch Status": "Multi-repo workspace detected. Branch status analysis skipped — branches are managed per-repo via worktrees."
+  - Only proceed with the steps below if `WORKSPACE_MODE` is `false`.
+- **Worktree detection (run next):**
   - Check if the project root is a git worktree by running `git rev-parse --is-inside-work-tree` and `git worktree list` from the project root.
   - If the project root appears as a worktree entry (i.e., it is listed in `git worktree list` but is NOT the main working tree), then we are inside a worktree.
   - **If inside a worktree: skip the entire branch status analysis.** In the final markdown, write under "## Linked Branch Status": "Project is running inside a git worktree. Branch status analysis skipped."
@@ -137,10 +145,46 @@ When this command is invoked:
   - If a linked download failed, note it explicitly: - {LINKED_TASK}: Unable to fetch (reason)
   - If no linked tasks were detected, write "No linked tasks detected."
 - Add ## Linked Branch Status
-  - If branch references were discovered:
+  - If `WORKSPACE_MODE` is `true`: write "Multi-repo workspace detected. Branch status analysis skipped — branches are managed per-repo via worktrees."
+  - Otherwise, if branch references were discovered:
     - List each branch with its source task and merge status, explicitly mentioning the base branch used for the check: - {Branch Name} - Source: {LINKED_TASK} - Status: Merged into {current_branch} / Not merged into {current_branch} / Missing
     - If a branch was missing from the repo, call that out explicitly so branch management can follow up
   - If no branches were discovered, state "No branch references detected in linked tasks."
+
+### UPDATE WORKSPACE FILE (WORKSPACE MODE ONLY)
+
+- **Skip this section entirely if `WORKSPACE_MODE` is `false`.**
+- Search for a `.code-workspace` file at PROJECT ROOT (e.g., `*.code-workspace`).
+- If a `.code-workspace` file exists:
+  - Read and parse the JSON content.
+  - Check if the `folders` array already contains an entry with `"path": ".temp"`.
+  - If `.temp` is NOT already listed, add it to the `folders` array:
+    ```json
+    {
+      "name": ".temp",
+      "path": ".temp"
+    }
+    ```
+  - Write the updated JSON back to the `.code-workspace` file (preserve existing formatting/indentation).
+- If no `.code-workspace` file exists, skip this step.
+
+### UPDATE AGENTS.MD (WORKSPACE MODE ONLY)
+
+- **Skip this section entirely if `WORKSPACE_MODE` is `false`.**
+- Check if an `Agents.md` file exists at PROJECT ROOT (the workspace root).
+- If `Agents.md` exists:
+  - Check if a section for this task already exists (look for a `## Task: {TASK_NUMBER}` header).
+  - If the section already exists, replace it entirely with updated content.
+  - If the section does not exist, append it to the end of the file.
+  - The section content should be minimal:
+    ```markdown
+    ## Task: {TASK_NUMBER}
+    - **Task Folder:** `./.temp/{TASK_NUMBER}/`
+    - **Task Details:** `./.temp/{TASK_NUMBER}/{TASK_NUMBER}-task-details.md`
+    - **Summary:** {one-line summary from Jira}
+    - **Linked Tasks:** {comma-separated list of linked task keys with paths to their detail files, or "None"}
+    ```
+- If `Agents.md` does not exist at PROJECT ROOT, skip this step (do not create the file).
 
 ### DISPLAY SUMMARY
 
@@ -156,6 +200,7 @@ When this command is invoked:
   - Linked task URL list: display each linked key as a clickable Jira link (e.g., [ACR-123](https://cosoft.atlassian.net/browse/ACR-123))
   - Linked task status summary: counts of Done vs In Progress vs other states
   - Branch status summary: counts of branches merged into the current branch vs not merged vs missing, and display the name of the current branch so operators can verify they are on the expected base branch
+  - If `WORKSPACE_MODE` is `true`: note workspace updates (`.code-workspace` file updated, `Agents.md` updated with task reference)
 - **IMPORTANT:** All URLs must be displayed as clickable markdown links using the format [link text](url) - never display bare URLs
 - End with a clear success line so operators know what to run next, e.g. "Jira task setup complete. Next step: /cosoft-jira-02-plan {TASK_NUMBER}"
 

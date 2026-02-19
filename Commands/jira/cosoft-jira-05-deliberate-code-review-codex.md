@@ -110,10 +110,21 @@ When this command is invoked with a task number:
   - Check if the implementation plan file exists: `.temp/{TASK_NUMBER}/{TASK_NUMBER}-implementation-plan.md`
   - If the task file does not exist, inform the user and halt execution
   - If the implementation plan file does not exist, inform the user: "No `{TASK_NUMBER}-implementation-plan.md` file found. Please run `/plan-task {TASK_NUMBER}` first to create an implementation plan."
+- **Workspace mode detection:**
+  - Run `git rev-parse --is-inside-work-tree` from PROJECT ROOT
+  - **If it IS a git repo:** Set `WORKSPACE_MODE` to `false` (single-project mode)
+  - **If it is NOT a git repo (command fails/errors):** Scan immediate subdirectories of PROJECT ROOT for git repos. If any subdirectory is a git repo, set `WORKSPACE_MODE` to `true` (multi-repo workspace). Store the list of git sub-repo directory names as `GIT_REPOS`.
 - Get git diff to identify changed files:
-  - Determine BASE_BRANCH: Try `master` first, if it doesn't exist try `develop`, if neither exists use current branch
-  - From PROJECT ROOT, run: `git diff {BASE_BRANCH} --name-only`
-  - Capture the list of changed files
+  - **If `WORKSPACE_MODE` is `false` (single-project mode):**
+    - Determine BASE_BRANCH: Try `master` first, if it doesn't exist try `develop`, if neither exists use current branch
+    - From PROJECT ROOT, run: `git diff {BASE_BRANCH} --name-only`
+    - Capture the list of changed files
+  - **If `WORKSPACE_MODE` is `true` (multi-repo workspace):**
+    - For each sub-repo in `GIT_REPOS`:
+      - From the sub-repo directory, determine BASE_BRANCH: Try `master` first, if it doesn't exist try `develop`, if neither exists use current branch
+      - Run: `git diff {BASE_BRANCH} --name-only` from the sub-repo directory
+      - Prefix each changed file path with the sub-repo directory name (e.g., `cloud_backend/SomeFile.cs`)
+    - Combine all results into a single list
   - Optionally filter files to only those relevant to the task (can use `{TASK_NUMBER}-implementation-plan.md` to identify relevant paths/patterns)
   - Store list of changed files as `CHANGED_FILES`
   - If no changed files found, inform user: "No changed files found. Ensure implementation has been completed." and STOP
@@ -336,7 +347,8 @@ When this command is invoked with a task number:
   - Update `codereview.md` to mark implemented recommendations as `[IMPLEMENTED]`
   - Document in `deliberation.md`: "Implemented agreed recommendations: [list recommendation numbers]"
   - Get fresh git diff to see new changes:
-    - Run: `git diff {BASE_BRANCH} --name-only` from PROJECT ROOT
+    - **If `WORKSPACE_MODE` is `false`:** Run `git diff {BASE_BRANCH} --name-only` from PROJECT ROOT
+    - **If `WORKSPACE_MODE` is `true`:** For each sub-repo in `GIT_REPOS`, run `git diff {BASE_BRANCH} --name-only` from the sub-repo directory and prefix paths with the sub-repo name
     - Update `CHANGED_FILES` list to include newly changed files
   - Proceed to POST-IMPLEMENTATION REVIEW
 
