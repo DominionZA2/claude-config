@@ -1,0 +1,187 @@
+{
+    "folders": [
+        {
+            "name": "v2-portal",
+            "path": "v2-portal"
+        },
+        {
+            "name": "cloud_backend",
+            "path": "cloud_backend"
+        }
+    ],
+    "settings": {
+        "task.allowAutomaticTasks": "on",
+        "files.eol": "\r\n",
+        "editor.renderWhitespace": "all"
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "portal",
+                "type": "shell",
+                "command": "zsh",
+                "args": [ "-l" ],
+                "options": {
+                    "cwd": "${workspaceFolder:v2-portal}"
+                },
+                "runOptions": {
+                    "runOn": "folderOpen"
+                },
+                "presentation": {
+                    "panel": "dedicated",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "api",
+                "type": "shell",
+                "command": "zsh",
+                "args": [ "-l" ],
+                "options": {
+                    "cwd": "${workspaceFolder:cloud_backend}"
+                },
+                "runOptions": {
+                    "runOn": "folderOpen"
+                },
+                "presentation": {
+                    "panel": "dedicated",
+                    "showReuseMessage": false,
+                    "clear": false
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "build AuraServices",
+                "type": "shell",
+                "command": "/usr/local/share/dotnet/dotnet",
+                "args": [
+                    "build",
+                    "AuraServices.sln"
+                ],
+                "options": {
+                    "cwd": "${workspaceFolder:cloud_backend}"
+                },
+                "problemMatcher": [ "$msCompile" ],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                }
+            }
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "compounds": [
+            {
+                "name": "Gateway + Services",
+                "configurations": [
+                    "Gateway",
+                    "Microservice.Auth",
+                    "Microservice.Brand",
+                    "Microservice.ExternalIntegration",
+                    "Microservice.Invoicing",
+                    "Microservice.Lookup",
+                    "Microservice.Menu",
+                    "Microservice.OnlineOrdering",
+                    "Microservice.Payment"
+                ]
+            }
+        ],
+        "configurations": [
+            {
+                "name": "Gateway",
+                "type": "coreclr",
+                "request": "launch",
+                "preLaunchTask": "build AuraServices",
+                "program": "${workspaceFolder:cloud_backend}/CloudGatewayApi/bin/Debug/net8.0/CloudGatewayApi.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/CloudGatewayApi",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Auth",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Auth/bin/Debug/net8.0/Aura.Microservice.Auth.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Auth",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Brand",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Brand/bin/Debug/net8.0/Aura.Microservice.Brand.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Brand",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.ExternalIntegration",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.ExternalIntegration/bin/Debug/net8.0/Aura.Microservice.ExternalIntegration.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.ExternalIntegration",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Invoicing",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Invoicing/bin/Debug/net8.0/Aura.Microservice.Invoicing.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Invoicing",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Lookup",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Lookup/bin/Debug/net8.0/Aura.Microservice.Lookup.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Lookup",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Menu",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Menu/bin/Debug/net8.0/Aura.Microservice.Menu.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Menu",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.OnlineOrdering",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.OnlineOrdering/bin/Debug/net8.0/Aura.Microservice.OnlineOrdering.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.OnlineOrdering",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            },
+            {
+                "name": "Microservice.Payment",
+                "type": "coreclr",
+                "request": "launch",
+                "program": "${workspaceFolder:cloud_backend}/Aura.Microservice.Payment/bin/Debug/net8.0/Aura.Microservice.Payment.dll",
+                "args": [],
+                "cwd": "${workspaceFolder:cloud_backend}/Aura.Microservice.Payment",
+                "stopAtEntry": false,
+                "console": "internalConsole"
+            }
+        ]
+    }
+}
