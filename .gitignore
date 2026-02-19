@@ -21,6 +21,9 @@ plugins/known_marketplaces.json
 .credentials.json
 *.env
 
+# Backups (auto-generated settings snapshots)
+backups/
+
 # Downloads / binaries
 downloads/
 
