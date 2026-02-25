@@ -19,7 +19,7 @@
         "tasks": [
             {
                 "label": "portal",
-                "type": "shell",
+                "type": "process",
                 "command": "zsh",
                 "args": [ "-l" ],
                 "options": {
@@ -37,7 +37,7 @@
             },
             {
                 "label": "api",
-                "type": "shell",
+                "type": "process",
                 "command": "zsh",
                 "args": [ "-l" ],
                 "options": {
