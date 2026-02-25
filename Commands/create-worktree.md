@@ -48,8 +48,9 @@ When invoked (example: `/create-worktree feature/my-branch`):
    - Present a confirmation prompt: "Create local tracking branch `{newBranchName}` from `{baseBranch}`?"
    - If the user approves, run from the project root:
      ```
-     git branch {newBranchName} {baseBranch}
+     git branch --no-track {newBranchName} {baseBranch}
      ```
+     The `--no-track` flag is critical: without it, git inherits the upstream from the base branch (e.g., the new branch would track `origin/master` instead of its own remote branch).
      Report success or failure. On failure (e.g., base branch does not exist), surface the error and stop.
    - If the user declines, stop gracefully.
 8. Ensure the worktree root directory exists:

@@ -59,15 +59,15 @@ fi
 
 If `PREFLIGHT_FAILED`, show all the errors to the user with actionable fix instructions, then **stop**.
 
-### Step 3 — Check existing workspace
+### Step 3 — Gather information (non-interactive)
 
-Check if `${CLOUD_WS_ROOT}/${KEY}` already exists.
+Run Steps 3a–3d without asking the user anything. Collect all results, then proceed to Step 4 (consolidated prompt).
 
-- If it exists, warn the user: "Workspace directory `${CLOUD_WS_ROOT}/${KEY}` already exists. Continue and potentially overwrite, or stop?"
-- If the user says stop, stop gracefully.
-- If it does not exist, proceed silently.
+#### 3a. Check existing workspace
 
-### Step 4 — Fetch branches
+Check if `${CLOUD_WS_ROOT}/${KEY}` already exists. Store the result (exists / does not exist).
+
+#### 3b. Fetch branches
 
 Run `git fetch --all --prune` in **both** repos. Ignore non-fatal warnings about deleted refs. Run these in parallel if possible.
 
@@ -76,40 +76,30 @@ cd "$CLOUD_WS_PORTAL_REPO" && git fetch --all --prune
 cd "$CLOUD_WS_BACKEND_REPO" && git fetch --all --prune
 ```
 
-### Step 5 — Discover branches
+#### 3c. Discover branches
 
-Run `git branch -a` in both repos. Filter for branches containing `{KEY}` (case-insensitive). Present a unified view across both repos:
+Run `git branch -a` in both repos. Filter for branches containing `{KEY}` (case-insensitive). Classify results into categories:
 
 **Category A — Branches in BOTH repos:** These are primary candidates.
-- If exactly one match exists in both repos, auto-select it and announce the selection.
-- If multiple matches exist, number them and ask the user to pick one.
+- If exactly one match exists in both repos, auto-select it (no question needed).
+- If multiple matches exist, note them — the user must pick one.
 
-**Category B — Branches in ONE repo only:** Show these as "partial matches".
-- Tell the user: selecting one of these means the branch will be created in the other repo.
+**Category B — Branches in ONE repo only:** These are "partial matches".
+- Selecting one means the branch will be created in the other repo.
 
-**Category C — No matches in either repo:** Proceed to Step 6 (branch creation).
+**Category C — No matches in either repo:** A new branch will need to be created.
 
 When presenting branches, normalise remote names by stripping the `remotes/` prefix. Deduplicate local and remote refs that point to the same branch name.
 
-### Step 6 — Branch creation (if needed)
+#### 3d. Fetch Jira metadata (if branch creation may be needed)
 
-Only enter this step if no matching branches were found, or the user selected a partial match that needs creation in one repo.
-
-#### 6a. Ask for a branch prefix
-
-Ask the user to pick a prefix: `feature`, `bugfix`, `hotfix`, `chore`, or `none`.
-
-#### 6b. Auto-generate the branch slug from the Jira task title
-
-Fetch the Jira issue using the existing Python script:
+If Step 3c resulted in Category C (no matches), fetch the Jira issue now so the branch slug can be shown in the consolidated prompt:
 
 ```bash
 source ~/.claude/jira.env && python3 ~/.claude/scripts/jira_fetch.py "{KEY}" "/tmp/{KEY}" --metadata-only
 ```
 
-Parse the JSON output and extract the `summary` field.
-
-Generate the slug automatically using this logic:
+Parse the JSON output, extract the `summary` field, and pre-generate the branch slug using this logic:
 1. Start with `{KEY-lowered}` (e.g., `acp-1083`).
 2. Take the Jira summary, convert to lowercase, replace spaces and special characters with hyphens, collapse multiple hyphens, strip leading/trailing hyphens.
 3. Append the slugified summary to the key: `{KEY-lowered}-{slugified-summary}`.
@@ -119,35 +109,49 @@ Example: Jira summary "Fix login redirect loop on timeout" → slug `acp-1083-fi
 
 **Do NOT ask the user for a slug or description.** The branch name is always auto-generated from the Jira title.
 
-#### 6c. Default branches
+### Step 4 — Consolidated user prompt
 
-The default branches are:
+Present **one single prompt** containing all questions the user needs to answer, based on the results gathered in Step 3. The goal is to ask everything upfront so the user can answer once and walk away.
+
+Build the prompt dynamically — only include sections that apply:
+
+1. **If workspace already exists** (from 3a): "Workspace `${CLOUD_WS_ROOT}/${KEY}` already exists. Continue and overwrite? (yes/no)"
+2. **If multiple matching branches found** (from 3c, Category A with multiple matches): "Multiple matching branches found — pick one:" followed by a numbered list.
+3. **If no matching branches found** (from 3c, Category C): Show the auto-generated slug from 3d and ask: "No branches matching `{KEY}` found. Branch will be created from the Jira title: `{slug}`. Pick a prefix: `feature` (1), `bugfix` (2), `hotfix` (3), `chore` (4), or `none` (5)."
+4. **Always**: "Install dependencies after setup? (yes/no)"
+
+If only the dependency question applies (branch auto-selected, workspace doesn't exist), still present it as a single prompt.
+
+Wait for **one response** answering all questions. Parse the answers, then proceed through all remaining steps without further interaction.
+
+- If the user says no to the workspace overwrite, **stop**.
+- If the user picks a branch prefix, that is implicit approval to create the branch — **do not ask for separate confirmation**.
+
+### Step 5 — Branch creation (if needed)
+
+Only enter this step if no matching branches were found (Category C from 3c), or the user selected a partial match (Category B) that needs creation in one repo.
+
+Use the prefix from Step 4 and the slug from Step 3d to form the branch name.
+
+The default base branches are:
 - **v2-portal:** `main`
 - **cloud_backend:** `master`
 
-#### 6d. Confirm and create
+Announce the branch being created and proceed (no confirmation needed — the user already approved via the prefix selection in Step 4):
 
-Show a confirmation prompt:
-```
-Create branch '{branchName}' in both repos?
-- v2-portal: from {portalDefault}
-- cloud_backend: from {backendDefault}
-```
-
-If the user approves, create the branch in each repo:
 ```bash
 cd "$CLOUD_WS_PORTAL_REPO" && git branch {branchName} origin/{portalDefault}
 cd "$CLOUD_WS_BACKEND_REPO" && git branch {branchName} origin/{backendDefault}
 ```
 Report success or failure for each. On failure, surface the error and stop.
 
-### Step 7 — Create workspace root
+### Step 6 — Create workspace root
 
 ```bash
 mkdir -p "${CLOUD_WS_ROOT}/${KEY}"
 ```
 
-### Step 8 — Create worktrees
+### Step 7 — Create worktrees
 
 From each source repo, create the worktree in the workspace directory:
 
@@ -158,7 +162,7 @@ cd "$CLOUD_WS_BACKEND_REPO" && git worktree add "${CLOUD_WS_ROOT}/${KEY}/cloud_b
 
 Report success or failure for each. On failure, surface the error and stop.
 
-### Step 9 — Submodule init (cloud_backend only)
+### Step 8 — Submodule init (cloud_backend only)
 
 Run submodule initialization in the **cloud_backend** worktree only. Skip v2-portal — it has no submodules and the command always fails there. This is **non-blocking** — if it fails, report the warning but continue.
 
@@ -166,7 +170,7 @@ Run submodule initialization in the **cloud_backend** worktree only. Skip v2-por
 cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && git submodule update --init --recursive
 ```
 
-### Step 10 — Copy .vscode settings
+### Step 9 — Copy .vscode settings
 
 For each repo, check if `.vscode` exists in the source repo root. If so, copy it into the corresponding worktree:
 
@@ -178,7 +182,7 @@ cp -R "$CLOUD_WS_BACKEND_REPO/.vscode" "${CLOUD_WS_ROOT}/${KEY}/cloud_backend/.v
 
 Report which files were copied, or skip silently if `.vscode` doesn't exist in a source repo.
 
-### Step 11 — Copy templates
+### Step 10 — Copy templates
 
 Copy the template files into the workspace root:
 
@@ -198,18 +202,18 @@ fi
 
 On macOS the template is used as-is with no patching needed.
 
-### Step 12 — Dependency installation
+### Step 11 — Dependency installation
 
-Ask the user if they want to install dependencies now:
+Use the dependency install answer from Step 4 (already collected upfront). **Do not ask again.**
 
-- **v2-portal:** `cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install`
-- **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln`
+- If the user opted in, run both:
+  - **v2-portal:** `cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install`
+  - **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln`
+  Report success or failure for each.
 
-If the user opts in, run both. Report success or failure for each.
+- If the user opted out, include the manual commands in the summary.
 
-If the user skips, include the manual commands in the summary.
-
-### Step 13 — Summary
+### Step 12 — Summary
 
 Present a complete summary:
 
