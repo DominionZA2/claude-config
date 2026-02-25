@@ -13,7 +13,7 @@
         "task.allowAutomaticTasks": "on",
         "files.eol": "\r\n",
         "editor.renderWhitespace": "all",
-        "terminal.integrated.environmentChangesRelaunch": false
+        "terminal.integrated.environmentChangesRelaunch": "off"
     },
     "tasks": {
         "version": "2.0.0",
