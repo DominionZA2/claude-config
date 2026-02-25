@@ -119,13 +119,11 @@ Example: Jira summary "Fix login redirect loop on timeout" → slug `acp-1083-fi
 
 **Do NOT ask the user for a slug or description.** The branch name is always auto-generated from the Jira title.
 
-#### 6c. Detect default branches
+#### 6c. Default branches
 
-Detect each repo's default branch **independently** using:
-```bash
-git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
-```
-Fall back to checking if `main` or `master` exists if the above fails.
+The default branches are:
+- **v2-portal:** `main`
+- **cloud_backend:** `master`
 
 #### 6d. Confirm and create
 
