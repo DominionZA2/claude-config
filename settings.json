@@ -23,7 +23,15 @@
       "Read(//Users/michaelsmit/Source/cloud_backend/**)",
       "Read(//Users/michaelsmit/source/cloud_reports/Scripts/**)",
       "Read(//Users/michaelsmit/Source/cloud_reports/Scripts/**)",
-      "Read(//Users/michaelsmit/**)"
+      "Read(//Users/michaelsmit/**)",
+      "Bash(git show:*)",
+      "Bash(git merge:*)",
+      "Read(//c/Users/msmit/**)",
+      "Read(//c/Users/msmit/.claude/**)",
+      "Edit(//c/Source/**)",
+      "Write(//c/Source/**)",
+      "Edit(//c/source/**)",
+      "Write(//c/source/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
@@ -32,7 +40,21 @@
       "/Users/michaelsmit/source/cloud_reports/Scripts",
       "/Users/michaelsmit/Source/cloud_reports/Scripts",
       "/Users/michaelsmit/source/cloud_reports",
-      "/Users/michaelsmit/Source/cloud_reports"
+      "/Users/michaelsmit/Source/cloud_reports",
+      "C:\\Users\\msmit\\.claude\\plugins\\cache\\supermemory-plugins",
+      "C:\\Users\\msmit\\.claude\\plugins\\marketplaces\\supermemory-plugins",
+      "C:\\Source\\cloud_backend\\Aura.Microservice.Menu",
+      "C:\\Source\\cloud_backend\\CloudGatewayApi\\Controllers",
+      "C:\\Source\\cloud_backend\\Aura.CloudBusinessLogic",
+      "c:\\Source\\v2-portal\\app\\[locale]\\brand\\stock\\items\\components\\bulk-actions",
+      "c:\\Source\\v2-portal",
+      "C:\\Source\\cloud_backend\\Aura.Database.Context.Brand\\Partials",
+      "C:\\Source\\cloud_backend\\AuraCloudInterface\\PrinterRouting",
+      "C:\\Source\\cloud_backend\\Aura.PrinterRouting.Manager",
+      "C:\\source\\cloud_backend\\Aura.Database.Context.Stock\\Partials",
+      "C:\\source\\cloud_backend\\Aura.Database.Context.Stock",
+      "C:\\source\\cloud_backend\\Aura.Stock.Manager\\Extensions",
+      "C:\\source\\cloud_backend\\Tests\\Aura.Stock.Tests\\Processed"
     ]
   },
   "statusLine": {
@@ -46,5 +68,8 @@
     "claude-supermemory@supermemory-plugins": true
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "codeStyle": {
+    "commitCoAuthor": false
+  }
 }

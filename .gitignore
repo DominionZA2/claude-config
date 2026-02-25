@@ -4,6 +4,8 @@ ide/
 statsig/
 todos/
 projects/
+tasks/
+backups/
 
 # Cache and transient data
 cache/
@@ -16,6 +18,8 @@ plans/
 plugins/cache/
 plugins/marketplaces/
 plugins/known_marketplaces.json
+plugins/blocklist.json
+plugins/installed_plugins.json
 
 # Credentials and environment files (contain secrets)
 .credentials.json
