@@ -101,7 +101,13 @@ Ask the user to pick a prefix: `feature`, `bugfix`, `hotfix`, `chore`, or `none`
 
 #### 6b. Auto-generate the branch slug from the Jira task title
 
-Fetch the Jira issue using the `mcp__atlassian__getJiraIssue` tool (or `mcp__claude_ai_Atlassian__getJiraIssue`) with the `{KEY}` as the issueIdOrKey. Extract the issue's `summary` (title) field.
+Fetch the Jira issue using the existing Python script:
+
+```bash
+source ~/.claude/jira.env && python3 ~/.claude/scripts/jira_fetch.py "{KEY}" "/tmp/{KEY}" --metadata-only
+```
+
+Parse the JSON output and extract the `summary` field.
 
 Generate the slug automatically using this logic:
 1. Start with `{KEY-lowered}` (e.g., `acp-1083`).
