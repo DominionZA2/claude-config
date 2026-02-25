@@ -95,27 +95,47 @@ When presenting branches, normalise remote names by stripping the `remotes/` pre
 
 Only enter this step if no matching branches were found, or the user selected a partial match that needs creation in one repo.
 
-Follow the same UX as the existing `create-worktree` skill:
+#### 6a. Ask for a branch prefix
 
-1. Ask for a branch prefix, offering choices: `feature`, `bugfix`, `hotfix`, `chore`, or `none`.
-2. Optionally ask for a slug/description to append (e.g., `feature/ACP-1077-add-menu-sync`). If none provided, use just `{prefix}/{KEY-lowered}`.
-3. Detect each repo's default branch **independently** using:
-   ```bash
-   git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
-   ```
-   Fall back to checking if `main` or `master` exists if the above fails.
-4. Show a confirmation prompt:
-   ```
-   Create branch '{branchName}' in both repos?
-   - v2-portal: from {portalDefault}
-   - cloud_backend: from {backendDefault}
-   ```
-5. If the user approves, create the branch in each repo:
-   ```bash
-   cd "$CLOUD_WS_PORTAL_REPO" && git branch {branchName} origin/{portalDefault}
-   cd "$CLOUD_WS_BACKEND_REPO" && git branch {branchName} origin/{backendDefault}
-   ```
-   Report success or failure for each. On failure, surface the error and stop.
+Ask the user to pick a prefix: `feature`, `bugfix`, `hotfix`, `chore`, or `none`.
+
+#### 6b. Auto-generate the branch slug from the Jira task title
+
+Fetch the Jira issue using the `mcp__atlassian__getJiraIssue` tool (or `mcp__claude_ai_Atlassian__getJiraIssue`) with the `{KEY}` as the issueIdOrKey. Extract the issue's `summary` (title) field.
+
+Generate the slug automatically using this logic:
+1. Start with `{KEY-lowered}` (e.g., `acp-1083`).
+2. Take the Jira summary, convert to lowercase, replace spaces and special characters with hyphens, collapse multiple hyphens, strip leading/trailing hyphens.
+3. Append the slugified summary to the key: `{KEY-lowered}-{slugified-summary}`.
+4. Truncate the entire slug (key + summary) to a maximum of **40 characters**. The 40-char limit excludes the prefix and the `/` separator. If truncation is needed, cut at a word boundary (hyphen) to avoid partial words.
+
+Example: Jira summary "Fix login redirect loop on timeout" → slug `acp-1083-fix-login-redirect-loop-on` → branch `bugfix/acp-1083-fix-login-redirect-loop-on`.
+
+**Do NOT ask the user for a slug or description.** The branch name is always auto-generated from the Jira title.
+
+#### 6c. Detect default branches
+
+Detect each repo's default branch **independently** using:
+```bash
+git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
+```
+Fall back to checking if `main` or `master` exists if the above fails.
+
+#### 6d. Confirm and create
+
+Show a confirmation prompt:
+```
+Create branch '{branchName}' in both repos?
+- v2-portal: from {portalDefault}
+- cloud_backend: from {backendDefault}
+```
+
+If the user approves, create the branch in each repo:
+```bash
+cd "$CLOUD_WS_PORTAL_REPO" && git branch {branchName} origin/{portalDefault}
+cd "$CLOUD_WS_BACKEND_REPO" && git branch {branchName} origin/{backendDefault}
+```
+Report success or failure for each. On failure, surface the error and stop.
 
 ### Step 7 — Create workspace root
 
