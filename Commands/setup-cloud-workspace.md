@@ -111,21 +111,45 @@ Example: Jira summary "Fix login redirect loop on timeout" → slug `acp-1083-fi
 
 ### Step 4 — Consolidated user prompt
 
-Present **one single prompt** containing all questions the user needs to answer, based on the results gathered in Step 3. The goal is to ask everything upfront so the user can answer once and walk away.
+Present **one single prompt** as a simple form the user can fill in. The goal is one response, then go.
 
-Build the prompt dynamically — only include sections that apply:
+Build the prompt dynamically — only include lines that apply. Use this exact format:
 
-1. **If workspace already exists** (from 3a): "Workspace `${CLOUD_WS_ROOT}/${KEY}` already exists. Continue and overwrite? (yes/no)"
-2. **If multiple matching branches found** (from 3c, Category A with multiple matches): "Multiple matching branches found — pick one:" followed by a numbered list.
-3. **If no matching branches found** (from 3c, Category C): Show the auto-generated slug from 3d and ask: "No branches matching `{KEY}` found. Branch will be created from the Jira title: `{slug}`. Pick a prefix: `feature` (1), `bugfix` (2), `hotfix` (3), `chore` (4), or `none` (5)."
-4. **Always**: "Install dependencies after setup? (yes/no)"
+```
+Ready to set up ACP-{KEY}. Quick answers:
+```
 
-If only the dependency question applies (branch auto-selected, workspace doesn't exist), still present it as a single prompt.
+Then include only the applicable lines from below:
 
-Wait for **one response** answering all questions. Parse the answers, then proceed through all remaining steps without further interaction.
+- **If workspace already exists** (from 3a), add: `- Workspace already exists — overwrite? [yes/no]:`
+- **If multiple matching branches found** (from 3c, Category A with multiple matches), add: `- Branch? [pick one: {list branch names separated by " / "}]:`
+- **If no matching branches found** (from 3c, Category C), add: `- Branch type for "{slug}"? [feature / bugfix / hotfix / chore / none]:`
+- **Always** add: `- Install deps? [yes/no]:`
+
+Then add: `(just type your answers in order, e.g. "bugfix, yes")`
+
+**Example output (new branch, no existing workspace):**
+```
+Ready to set up ACP-1090. Quick answers:
+- Branch type for "acp-1090-stock-item-audit"? [feature / bugfix / hotfix / chore / none]:
+- Install deps? [yes/no]:
+
+(just type your answers in order, e.g. "bugfix, yes")
+```
+
+**Example output (workspace exists, branch auto-selected):**
+```
+Ready to set up ACP-1090. Quick answers:
+- Workspace already exists — overwrite? [yes/no]:
+- Install deps? [yes/no]:
+
+(just type your answers in order, e.g. "yes, yes")
+```
+
+Wait for **one response**. Parse answers positionally (first answer = first question, etc.). Be flexible — accept comma-separated, space-separated, or natural language. Then proceed through all remaining steps without further interaction.
 
 - If the user says no to the workspace overwrite, **stop**.
-- If the user picks a branch prefix, that is implicit approval to create the branch — **do not ask for separate confirmation**.
+- If the user picks a branch type, that is implicit approval to create the branch — **do not ask for separate confirmation**.
 
 ### Step 5 — Branch creation (if needed)
 
