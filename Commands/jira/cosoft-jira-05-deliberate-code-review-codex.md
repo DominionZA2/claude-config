@@ -113,7 +113,7 @@ When this command is invoked with a task number:
 - **Workspace mode detection:**
   - Run `git rev-parse --is-inside-work-tree` from PROJECT ROOT
   - **If it IS a git repo:** Set `WORKSPACE_MODE` to `false` (single-project mode)
-  - **If it is NOT a git repo (command fails/errors):** Scan immediate subdirectories of PROJECT ROOT for git repos. If any subdirectory is a git repo, set `WORKSPACE_MODE` to `true` (multi-repo workspace). Store the list of git sub-repo directory names as `GIT_REPOS`.
+  - **If it is NOT a git repo (command fails/errors):** Scan immediate subdirectories of PROJECT ROOT for git repos (run `git rev-parse --is-inside-work-tree` in each). If any subdirectory is a git repo, set `WORKSPACE_MODE` to `true` (multi-repo workspace). Store the list of git sub-repo directory names as `GIT_REPOS`.
 - Get git diff to identify changed files:
   - **If `WORKSPACE_MODE` is `false` (single-project mode):**
     - Determine BASE_BRANCH: Try `master` first, if it doesn't exist try `develop`, if neither exists use current branch
@@ -256,7 +256,7 @@ When this command is invoked with a task number:
   - "Structure your response in markdown format with clear sections."
 - Invoke Codex:
   - Change directory to PROJECT ROOT
-  - Run: `cd {PROJECT_ROOT}; codex exec "<prompt>" -o .temp/{TASK_NUMBER}/codex-analysis.tmp`
+  - Run: `cd {PROJECT_ROOT}; codex exec --skip-git-repo-check "<prompt>" -o .temp/{TASK_NUMBER}/codex-analysis.tmp`
   - The `-o` flag writes clean response to temporary file
   - Read the response from `{PROJECT_ROOT}/.temp/{TASK_NUMBER}/codex-analysis.tmp`
   - If Codex fails, inform user: "Codex analysis failed. Error: {error message}" and STOP
@@ -424,7 +424,7 @@ When code review completes (consensus or limit), display:
 The command uses `codex exec` from the dynamically determined PROJECT root:
 
 ```powershell
-cd {PROJECT_ROOT}; codex exec "Your prompt here" -o .temp/{TASK_NUMBER}/codex-analysis.tmp
+cd {PROJECT_ROOT}; codex exec --skip-git-repo-check "Your prompt here" -o .temp/{TASK_NUMBER}/codex-analysis.tmp
 ```
 
 For multi-line prompts in PowerShell, use backtick-n for newlines:
@@ -432,7 +432,7 @@ For multi-line prompts in PowerShell, use backtick-n for newlines:
 ```powershell
 # Example: If task folder found at C:\Source\cloud_backend\.temp\ACR-678
 # Then PROJECT_ROOT = C:\Source\cloud_backend
-cd C:\Source\cloud_backend; codex exec "Read the following files:`n- .temp/ACR-678/ACR-678-task-details.md`n- .temp/ACR-678/ACR-678-implementation-plan.md`n- .temp/ACR-678/codereview.md`n- .temp/ACR-678/deliberation.md`nReview the code review recommendations..." -o .temp/ACR-678/codex-analysis.tmp
+cd C:\Source\cloud_backend; codex exec --skip-git-repo-check "Read the following files:`n- .temp/ACR-678/ACR-678-task-details.md`n- .temp/ACR-678/ACR-678-implementation-plan.md`n- .temp/ACR-678/codereview.md`n- .temp/ACR-678/deliberation.md`nReview the code review recommendations..." -o .temp/ACR-678/codex-analysis.tmp
 ```
 
 Key points:

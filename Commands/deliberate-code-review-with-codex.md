@@ -259,7 +259,7 @@ When this command is invoked with a task number:
   - "Structure your response in markdown format with clear sections."
 - Invoke Codex:
   - Change directory to PROJECT ROOT
-  - Run: `cd {PROJECT_ROOT}; codex exec "<prompt>" -o .temp/{TASK_NUMBER}/codex-analysis.tmp`
+  - Run: `cd {PROJECT_ROOT}; codex exec --skip-git-repo-check "<prompt>" -o .temp/{TASK_NUMBER}/codex-analysis.tmp`
   - The `-o` flag writes clean response to temporary file
   - Read the response from `{PROJECT_ROOT}/.temp/{TASK_NUMBER}/codex-analysis.tmp`
   - If Codex fails, inform user: "Codex analysis failed. Error: {error message}" and STOP
@@ -441,7 +441,7 @@ When code review completes (consensus or limit), display:
 The command uses `codex exec` from the dynamically determined PROJECT root:
 
 ```powershell
-cd {PROJECT_ROOT}; codex exec "Your prompt here" -o .temp/{TASK_NUMBER}/codex-analysis.tmp
+cd {PROJECT_ROOT}; codex exec --skip-git-repo-check "Your prompt here" -o .temp/{TASK_NUMBER}/codex-analysis.tmp
 ```
 
 For multi-line prompts in PowerShell, use backtick-n for newlines:
@@ -449,7 +449,7 @@ For multi-line prompts in PowerShell, use backtick-n for newlines:
 ```powershell
 # Example: If task folder found at C:\Source\cloud_backend\.temp\ACR-678
 # Then PROJECT_ROOT = C:\Source\cloud_backend
-cd C:\Source\cloud_backend; codex exec "Read the following files:`n- .temp/ACR-678/ACR-678-task-details.md`n- .temp/ACR-678/ACR-678-implementation-plan.md`n- .temp/ACR-678/codereview.md`n- .temp/ACR-678/deliberation.md`nReview the code review recommendations..." -o .temp/ACR-678/codex-analysis.tmp
+cd C:\Source\cloud_backend; codex exec --skip-git-repo-check "Read the following files:`n- .temp/ACR-678/ACR-678-task-details.md`n- .temp/ACR-678/ACR-678-implementation-plan.md`n- .temp/ACR-678/codereview.md`n- .temp/ACR-678/deliberation.md`nReview the code review recommendations..." -o .temp/ACR-678/codex-analysis.tmp
 ```
 
 Key points:
