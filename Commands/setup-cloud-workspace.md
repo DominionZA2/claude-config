@@ -193,7 +193,7 @@ Then patch the workspace file for the current OS. The template is authored for m
 WS_FILE="${CLOUD_WS_ROOT}/${KEY}/${KEY}.code-workspace"
 if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* || "$(uname -s)" == CYGWIN* || "$OS" == "Windows_NT" ]]; then
   # Windows: use Git Bash (forward slashes avoid JSON+PowerShell escaping issues) and dotnet from PATH
-  sed -i 's|"command": "zsh"|"command": "C:/Program Files/Git/bin/bash.exe"|g' "$WS_FILE"
+  sed -i 's|"command": "zsh"|"command": "bash"|g' "$WS_FILE"
   sed -i 's|"args": \[ "-l" \]|"args": [ "--login" ]|g' "$WS_FILE"
   sed -i 's|"command": "/usr/local/share/dotnet/dotnet"|"command": "dotnet"|g' "$WS_FILE"
 fi
