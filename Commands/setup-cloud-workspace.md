@@ -168,7 +168,9 @@ cp "$CLOUD_WS_TEMPLATES/template.code-workspace" "${CLOUD_WS_ROOT}/${KEY}/${KEY}
 Ask the user if they want to install dependencies now:
 
 - **v2-portal:** `cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install`
-- **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore`
+- **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln`
+
+`AuraServices.sln` is the main solution file — always use it explicitly. The repo contains multiple `.sln` files and `dotnet restore` without a target will fail.
 
 If the user opts in, run both. Report success or failure for each.
 
@@ -194,7 +196,7 @@ Dependencies: {installed | skipped}
 {If skipped, show:
   Manual install:
     cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install
-    cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore
+    cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln
 }
 
 Open in VS Code:
