@@ -10,50 +10,12 @@
         }
     ],
     "settings": {
-        "task.allowAutomaticTasks": "on",
         "files.eol": "\r\n",
-        "editor.renderWhitespace": "all",
-        "terminal.integrated.environmentChangesRelaunch": "off"
+        "editor.renderWhitespace": "all"
     },
     "tasks": {
         "version": "2.0.0",
         "tasks": [
-            {
-                "label": "portal",
-                "type": "process",
-                "command": "zsh",
-                "args": [ "-l" ],
-                "options": {
-                    "cwd": "${workspaceFolder:v2-portal}"
-                },
-                "runOptions": {
-                    "runOn": "folderOpen"
-                },
-                "presentation": {
-                    "panel": "dedicated",
-                    "showReuseMessage": false,
-                    "clear": false
-                },
-                "problemMatcher": []
-            },
-            {
-                "label": "api",
-                "type": "process",
-                "command": "zsh",
-                "args": [ "-l" ],
-                "options": {
-                    "cwd": "${workspaceFolder:cloud_backend}"
-                },
-                "runOptions": {
-                    "runOn": "folderOpen"
-                },
-                "presentation": {
-                    "panel": "dedicated",
-                    "showReuseMessage": false,
-                    "clear": false
-                },
-                "problemMatcher": []
-            },
             {
                 "label": "build AuraServices",
                 "type": "shell",
