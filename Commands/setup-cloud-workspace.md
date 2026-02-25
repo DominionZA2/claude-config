@@ -170,8 +170,6 @@ Ask the user if they want to install dependencies now:
 - **v2-portal:** `cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install`
 - **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln`
 
-`AuraServices.sln` is the main solution file — always use it explicitly. The repo contains multiple `.sln` files and `dotnet restore` without a target will fail.
-
 If the user opts in, run both. Report success or failure for each.
 
 If the user skips, include the manual commands in the summary.
@@ -202,6 +200,15 @@ Dependencies: {installed | skipped}
 Open in VS Code:
   [Open Workspace](vscode://file/${CLOUD_WS_ROOT}/${KEY}/${KEY}.code-workspace)
 ```
+
+## cloud_backend solution file
+
+The `cloud_backend` repo contains multiple `.sln` files. **`AuraServices.sln` is the primary solution file.** Always target it explicitly for any dotnet operation — restore, build, test, publish, etc. Running `dotnet` commands without specifying the solution will fail with `MSB1011`.
+
+Examples:
+- `dotnet restore AuraServices.sln`
+- `dotnet build AuraServices.sln`
+- `dotnet test AuraServices.sln`
 
 ## Error handling
 
