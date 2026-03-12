@@ -71,5 +71,6 @@
   "skipDangerousModePermissionPrompt": true,
   "codeStyle": {
     "commitCoAuthor": false
-  }
+  },
+  "effortLevel": "high"
 }
