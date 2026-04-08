@@ -6,6 +6,7 @@ todos/
 projects/
 tasks/
 backups/
+sessions/
 
 # Cache and transient data
 cache/
