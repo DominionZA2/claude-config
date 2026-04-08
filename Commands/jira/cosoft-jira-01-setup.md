@@ -64,7 +64,35 @@ When this command is invoked:
   - STOP execution
 - **If the script succeeds:**
   - Parse the JSON output
-  - Proceed to linked-task discovery before creating the main markdown file
+  - Proceed to branch setup, then linked-task discovery, before creating the main markdown file
+
+### BRANCH SETUP
+
+- **Skip this section entirely if any of the following are true:**
+  - `WORKSPACE_MODE` is `true` (multi-repo workspace — branches are managed per-repo)
+  - The project root is inside a git worktree (not the main working tree) — the worktree already has its own branch
+  - The project root is not a git repo
+- **Determine the current branch:**
+  - Run `git rev-parse --abbrev-ref HEAD` to get the current branch name
+  - If the current branch is already a feature/bugfix/hotfix/dev branch that contains {TASK_NUMBER} (case-insensitive), skip branch creation — we're already on the correct branch. Report: "Already on task branch: {current_branch}"
+  - If the current branch is a feature/bugfix/hotfix/dev branch for a **different** task, warn the user: "Currently on branch '{current_branch}' which belongs to a different task. Please switch to your base branch (e.g., main or staging) first." Then STOP execution.
+- **Check if a branch for this task already exists:**
+  - Search local branches: `git branch --list "*{TASK_NUMBER}*"` (case-insensitive by also searching lowercase variant)
+  - Search remote branches: `git ls-remote --heads origin` and filter for {TASK_NUMBER} (case-insensitive)
+  - If exactly one matching branch is found:
+    - If local: `git checkout {branch_name}`
+    - If remote only: `git checkout -b {branch_name} origin/{branch_name}`
+    - Report: "Checked out existing branch: {branch_name}"
+  - If multiple matching branches are found, list them and ask the user which to use, then STOP execution
+- **If no existing branch found, create a new one:**
+  - Derive the branch prefix from the fetched task data:
+    - Use `bugfix/` if the summary or description suggests a bug (keywords: "bug", "fix", "cant", "can't", "cannot", "broken", "error", "issue", "incorrect", "not working", "not able", "doesn't", "doesn't work", "wrong", "fail")
+    - Use `hotfix/` if the Jira task priority is "High", "Highest", or "Critical"
+    - Use `feature/` for new features, enhancements, or if unclear
+  - Generate the branch name: `{prefix}{TASK_NUMBER_LOWERCASE}-{SLUGIFIED_SUMMARY}`
+    - Slugify the summary: lowercase, replace spaces and special characters with hyphens, remove consecutive hyphens, trim trailing hyphens, truncate to keep total branch name under 60 characters
+  - Create and checkout: `git checkout -b {branch_name}`
+  - Report: "Created and checked out new branch: {branch_name}"
 
 ### LINKED TASK DISCOVERY
 
