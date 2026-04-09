@@ -164,9 +164,12 @@ The default base branches are:
 Announce the branch being created and proceed (no confirmation needed — the user already approved via the prefix selection in Step 4):
 
 ```bash
-cd "$CLOUD_WS_PORTAL_REPO" && git branch {branchName} origin/{portalDefault}
-cd "$CLOUD_WS_BACKEND_REPO" && git branch {branchName} origin/{backendDefault}
+cd "$CLOUD_WS_PORTAL_REPO" && git branch --no-track {branchName} origin/{portalDefault}
+cd "$CLOUD_WS_BACKEND_REPO" && git branch --no-track {branchName} origin/{backendDefault}
 ```
+
+The `--no-track` flag is critical: without it, git inherits the upstream from the base branch, so the new branch would end up tracking `origin/main` / `origin/master` instead of its own remote branch of the same name. Leave the upstream unset at creation — `git push -u origin {branchName}` on first push will set it to the correct remote branch.
+
 Report success or failure for each. On failure, surface the error and stop.
 
 ### Step 6 — Create workspace root
