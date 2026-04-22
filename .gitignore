@@ -25,6 +25,7 @@ plugins/installed_plugins.json
 # Credentials and environment files (contain secrets)
 .credentials.json
 *.env
+skills/home-assistant/config.json
 
 # Backups (auto-generated settings snapshots)
 backups/
