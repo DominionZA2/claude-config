@@ -1,20 +1,19 @@
 ---
 name: integration-branch
-description: Create a throwaway integration branch off the current branch, merge the appropriate target into it, and surface conflicts for resolution — without polluting the original branch. Auto-detects GitHub (staging/main) vs Bitbucket (develop/master) from the remote URL.
-argument-hint: [testing|production]
+description: Create a throwaway integration branch off the current feature/hotfix branch, merge the testing branch into it, and surface conflicts for resolution — without polluting the original branch. Auto-detects GitHub (staging) vs Bitbucket (develop) from the remote URL.
 disable-model-invocation: true
 allowed-tools: Bash(git *) Read
 ---
 
 # Integration branch
 
-Create a sibling branch for merging **$ARGUMENTS** into, so the conflict-resolution work doesn't contaminate the original feature/hotfix branch.
+Create a sibling branch for merging the testing branch into, so the conflict-resolution work doesn't contaminate the original feature/hotfix branch.
 
 ## When to use
 
-The user is on a feature/hotfix branch based off production. They want to PR it into a pre-production testing branch (develop on Bitbucket, staging on GitHub), but that target has diverged and the PR shows conflicts.
+The user is on a feature/hotfix branch based off production. They want to PR it into the pre-production testing branch (`develop` on Bitbucket, `staging` on GitHub), but that target has diverged and the PR shows conflicts.
 
-Merging the target *into* the feature branch would pollute it with unrelated changes that shouldn't go to production later. Instead, create a disposable integration branch off the feature branch, merge the target there, and PR *that* into the testing target.
+Merging the testing branch *into* the feature branch would pollute it with unrelated changes that shouldn't go to production later. Instead, create a disposable integration branch off the feature branch, merge the testing branch there, and PR *that* into the testing branch.
 
 The feature branch stays clean for its eventual PR into production.
 
@@ -22,12 +21,9 @@ The feature branch stays clean for its eventual PR into production.
 
 - **Source branch**: the current branch (typically `feature/<suffix>` or `hotfix/<suffix>`). Stays untouched.
 - **Integration branch**: new branch created off the source, prefixed `dev/<suffix>`. Disposable.
-- **Target branch**: what we merge into the integration branch. Depends on argument + remote host:
-
-  | Intent     | Bitbucket | GitHub    |
-  |------------|-----------|-----------|
-  | testing    | `develop` | `staging` |
-  | production | `master`  | `main`    |
+- **Testing branch**: what we merge into the integration branch. Depends on remote host:
+  - Bitbucket → `develop`
+  - GitHub → `staging`
 
 ## Procedure
 
@@ -45,29 +41,27 @@ The feature branch stays clean for its eventual PR into production.
    - Local: `git show-ref --verify --quiet refs/heads/dev/<suffix>`
    - Remote: `git ls-remote --heads origin dev/<suffix>`
 
-### Step 2 — Detect host and pick the target branch
+### Step 2 — Detect host and pick the testing branch
 
 1. `git remote get-url origin` (fall back to any upstream remote if origin is missing).
 2. Classify:
-   - URL contains `github.com` → **GitHub**
-   - URL contains `bitbucket.org` → **Bitbucket**
+   - URL contains `github.com` → **GitHub** → testing branch is `staging`
+   - URL contains `bitbucket.org` → **Bitbucket** → testing branch is `develop`
    - Anything else → stop and ask the user which convention applies.
-3. Default the argument to `testing` if none was provided.
-4. Map using the table above to pick the target branch.
 
-### Step 3 — Fetch and verify the target
+### Step 3 — Fetch and verify the testing branch
 
-1. `git fetch origin <target>` — must succeed.
-2. `git show-ref --verify --quiet refs/remotes/origin/<target>` — must exist.
+1. `git fetch origin <testing-branch>` — must succeed.
+2. `git show-ref --verify --quiet refs/remotes/origin/<testing-branch>` — must exist.
 
 ### Step 4 — Create the integration branch
 
 1. `git checkout -b dev/<suffix>` (from the current source-branch HEAD).
 2. Sanity check: `git branch --show-current` returns `dev/<suffix>`.
 
-### Step 5 — Merge the target
+### Step 5 — Merge the testing branch
 
-1. `git merge origin/<target> --no-commit --no-ff`.
+1. `git merge origin/<testing-branch> --no-commit --no-ff`.
 2. If clean → Step 6.
 3. If conflicts:
    - `git status --short` — capture every line with `UU`/`AU`/`UA`/`DU`/`UD`/`DD`/`AA`.
@@ -78,7 +72,7 @@ The feature branch stays clean for its eventual PR into production.
 ### Step 6 — Commit and offer to push
 
 1. Once the index is clean (`git status --short` shows no unmerged paths):
-   - `git commit -m "Merge branch '<target>' into dev/<suffix>"`
+   - `git commit -m "Merge branch '<testing-branch>' into dev/<suffix>"`
 2. Ask the user before pushing. If approved:
    - `git push -u origin dev/<suffix>`
 
@@ -88,13 +82,13 @@ End with a one-screen summary:
 
 - **Source branch** (untouched): `<source>`
 - **Integration branch**: `dev/<suffix>` — pushed / not pushed
-- **Target merged in**: `<target>` (host: GitHub / Bitbucket)
+- **Testing branch merged in**: `<testing-branch>` (host: GitHub / Bitbucket)
 - **Conflicts**: `<n>` (resolved / none)
-- **Next step**: "Open a PR from `dev/<suffix>` → `<target>` in `<host>`."
+- **Next step**: "Open a PR from `dev/<suffix>` → `<testing-branch>` in `<host>`."
 
 ## Hard rules
 
-- **Never merge the target into the source branch.** This skill exists specifically to prevent that contamination.
+- **Never merge the testing branch into the source branch.** This skill exists specifically to prevent that contamination.
 - **Never push the source branch.** Only the integration branch is pushed, and only with user approval.
 - **Never reuse an existing `dev/<suffix>`.** It may have its own history — blowing it away could lose work.
 - **Never guess the host.** If the remote URL isn't clearly GitHub or Bitbucket, stop and ask.
