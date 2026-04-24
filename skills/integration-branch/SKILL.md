@@ -123,13 +123,24 @@ Run this between "index clean" and "commit" on every merge — it guarantees eac
 
 ## Output format
 
-End with a one-screen summary:
+End with the summary template below. Fill placeholders with concrete values; do NOT paraphrase, reorder, or omit bullets. If what you report here is accurate, the user can infer what you did *not* do — so there is no "branches not modified" section. That inference only works when every merge line is unambiguous about direction, which is what the template enforces.
 
-- **Source branch** (untouched): `<source>`
-- **Integration branch**: `dev/<suffix>` — created / reused · pushed / not pushed
-- **Source merged in** (Path B only): `<source>` · conflicts `<n>` (resolved / none)
-- **Testing branch merged in**: `<testing-branch>` (host: GitHub / Bitbucket) · conflicts `<n>` (resolved / none)
-- **Next step**: "Open a PR from `dev/<suffix>` → `<testing-branch>` in `<host>`."
+### Summary
+
+**Only branch modified:** `dev/<suffix>`
+- Status: <created | reused>
+- Merge `<source>` INTO `dev/<suffix>`: <N commits brought in | skipped (Path A — fresh branch)> · conflicts: <N resolved | none>
+- Merge `origin/<testing-branch>` INTO `dev/<suffix>`: <N commits brought in | no-op, already up to date> · conflicts: <N resolved | none>
+- Local commits ahead of `origin/dev/<suffix>`: <N>
+- Push state: <pushed to origin/dev/<suffix> | not pushed>
+
+**Next step:** Open a PR from `dev/<suffix>` → `<testing-branch>` on <host>.
+
+### Rules for filling the template
+
+- Always phrase merges as **"Merge X INTO Y"** — the first branch is the source of content, the second is the branch that changed. Never use "merged in", "merged to", "merged with", or any shorthand that leaves direction to inference.
+- If a merge produced no new commits, write **"no-op, already up to date"** — do not fill in a commit count of 0 or describe it as a clean merge, because the user reads that as a merge that happened.
+- Do not add, remove, or rename bullet points. The shape is fixed.
 
 ## Hard rules
 
