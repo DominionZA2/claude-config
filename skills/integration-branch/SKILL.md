@@ -37,7 +37,7 @@ The feature branch stays clean for its eventual PR into production.
    - `release/<suffix>` → `<suffix>`
    - `bugfix/<suffix>` → `<suffix>`
    - Anything else → stop and ask the user what to name the integration branch.
-4. Candidate integration branch: `dev/<suffix>`. Stop and ask if it already exists:
+4. Candidate integration branch: `dev/<suffix>`. Check whether it already exists — this determines the path through Step 4:
    - Local: `git show-ref --verify --quiet refs/heads/dev/<suffix>`
    - Remote: `git ls-remote --heads origin dev/<suffix>`
 
@@ -54,22 +54,49 @@ The feature branch stays clean for its eventual PR into production.
 1. `git fetch origin <testing-branch>` — must succeed.
 2. `git show-ref --verify --quiet refs/remotes/origin/<testing-branch>` — must exist.
 
-### Step 4 — Create the integration branch
+### Step 4 — Create or switch to the integration branch
 
-1. `git checkout -b dev/<suffix>` (from the current source-branch HEAD).
+Two paths, depending on whether `dev/<suffix>` already exists (from Step 1.4). Remember which path was taken — Step 5 is skipped on Path A.
+
+**Path A — branch does not exist (fresh create)**
+
+1. `git checkout -b dev/<suffix>` from the current source-branch HEAD.
 2. Sanity check: `git branch --show-current` returns `dev/<suffix>`.
 
-### Step 5 — Merge the testing branch
+**Path B — branch already exists (reuse)**
+
+1. If the branch exists only on the remote: `git fetch origin dev/<suffix>` then `git checkout dev/<suffix>` (tracking is set up automatically).
+2. If a local branch exists: `git checkout dev/<suffix>`, then `git pull --ff-only` if it tracks a remote.
+3. If `git pull --ff-only` fails (local has diverged from the remote): stop and report. Do not force-update.
+4. Sanity check: `git branch --show-current` returns `dev/<suffix>`.
+
+### Step 5 — Merge the source branch into the integration branch (Path B only)
+
+Skip this step on Path A — `dev/<suffix>` is already a fresh copy of the source branch at HEAD, so there's nothing to catch up.
+
+On Path B, bring the source-branch commits that have landed since the integration branch was last updated into `dev/<suffix>`:
+
+1. `git merge <source-branch> --no-commit --no-ff`.
+2. If clean:
+   - `git commit -m "Merge branch '<source-branch>' into dev/<suffix>"`
+   - Continue to Step 6.
+3. If conflicts, use the same protocol as Step 6:
+   - `git status --short` — capture every line with `UU`/`AU`/`UA`/`DU`/`UD`/`DD`/`AA`.
+   - For each conflicted file, read both sides (`git show HEAD:<path>` and `git show MERGE_HEAD:<path>`) and explain the conflict with a proposed resolution.
+   - **STOP and report** the full conflict analysis to the user. Wait for explicit approval before resolving anything.
+   - After the user approves, resolve each file, `git add` it, commit, then continue to Step 6.
+
+### Step 6 — Merge the testing branch
 
 1. `git merge origin/<testing-branch> --no-commit --no-ff`.
-2. If clean → Step 6.
+2. If clean → Step 7.
 3. If conflicts:
    - `git status --short` — capture every line with `UU`/`AU`/`UA`/`DU`/`UD`/`DD`/`AA`.
    - For each conflicted file, read both sides (`git show HEAD:<path>` and `git show MERGE_HEAD:<path>`) and explain the conflict with a proposed resolution.
    - **STOP and report** the full conflict analysis to the user. Wait for explicit approval before resolving anything.
    - After the user approves, resolve each file, `git add` it, and continue.
 
-### Step 6 — Commit and offer to push
+### Step 7 — Commit and offer to push
 
 1. Once the index is clean (`git status --short` shows no unmerged paths):
    - `git commit -m "Merge branch '<testing-branch>' into dev/<suffix>"`
@@ -81,15 +108,15 @@ The feature branch stays clean for its eventual PR into production.
 End with a one-screen summary:
 
 - **Source branch** (untouched): `<source>`
-- **Integration branch**: `dev/<suffix>` — pushed / not pushed
-- **Testing branch merged in**: `<testing-branch>` (host: GitHub / Bitbucket)
-- **Conflicts**: `<n>` (resolved / none)
+- **Integration branch**: `dev/<suffix>` — created / reused · pushed / not pushed
+- **Source merged in** (Path B only): `<source>` · conflicts `<n>` (resolved / none)
+- **Testing branch merged in**: `<testing-branch>` (host: GitHub / Bitbucket) · conflicts `<n>` (resolved / none)
 - **Next step**: "Open a PR from `dev/<suffix>` → `<testing-branch>` in `<host>`."
 
 ## Hard rules
 
 - **Never merge the testing branch into the source branch.** This skill exists specifically to prevent that contamination.
 - **Never push the source branch.** Only the integration branch is pushed, and only with user approval.
-- **Never reuse an existing `dev/<suffix>`.** It may have its own history — blowing it away could lose work.
+- **Never force-update an existing `dev/<suffix>`.** If fast-forward pull fails or local/remote have diverged, stop and report — do not reset, rebase, or force-push.
 - **Never guess the host.** If the remote URL isn't clearly GitHub or Bitbucket, stop and ask.
 - **Never resolve conflicts without the user's explicit approval** of the proposed resolutions, file by file.
