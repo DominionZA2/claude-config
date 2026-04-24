@@ -2,7 +2,7 @@
 name: integration-branch
 description: Create a throwaway integration branch off the current feature/hotfix branch, merge the testing branch into it, and surface conflicts for resolution — without polluting the original branch. Auto-detects GitHub (staging) vs Bitbucket (develop) from the remote URL.
 disable-model-invocation: true
-allowed-tools: Bash(git *) Read
+allowed-tools: Bash(git *) Bash(dotnet *) Bash(basename *) Bash(pwd) Read Glob
 ---
 
 # Integration branch
@@ -78,23 +78,24 @@ On Path B, bring the source-branch commits that have landed since the integratio
 
 1. `git merge <source-branch> --no-commit --no-ff`.
 2. If clean:
+   - Run **Build verification** (§ below). If it fails on a clean merge, `git merge --abort` and stop — report errors to the user.
    - `git commit -m "Merge branch '<source-branch>' into dev/<suffix>"`
    - Continue to Step 6.
 3. If conflicts, use the same protocol as Step 6:
    - `git status --short` — capture every line with `UU`/`AU`/`UA`/`DU`/`UD`/`DD`/`AA`.
    - For each conflicted file, read both sides (`git show HEAD:<path>` and `git show MERGE_HEAD:<path>`) and explain the conflict with a proposed resolution.
    - **STOP and report** the full conflict analysis to the user. Wait for explicit approval before resolving anything.
-   - After the user approves, resolve each file, `git add` it, commit, then continue to Step 6.
+   - After the user approves, resolve each file and `git add` it. Then run **Build verification** (§ below) — on failure after conflict resolution, report and ask the user (do not auto-abort; their resolutions mustn't be silently discarded). On success, commit, then continue to Step 6.
 
 ### Step 6 — Merge the testing branch
 
 1. `git merge origin/<testing-branch> --no-commit --no-ff`.
-2. If clean → Step 7.
+2. If clean → run **Build verification** (§ below), then Step 7.
 3. If conflicts:
    - `git status --short` — capture every line with `UU`/`AU`/`UA`/`DU`/`UD`/`DD`/`AA`.
    - For each conflicted file, read both sides (`git show HEAD:<path>` and `git show MERGE_HEAD:<path>`) and explain the conflict with a proposed resolution.
    - **STOP and report** the full conflict analysis to the user. Wait for explicit approval before resolving anything.
-   - After the user approves, resolve each file, `git add` it, and continue.
+   - After the user approves, resolve each file and `git add` it. Then run **Build verification** (§ below) — on failure after conflict resolution, report and ask the user (do not auto-abort). On success, continue to Step 7.
 
 ### Step 7 — Commit and offer to push
 
@@ -102,6 +103,23 @@ On Path B, bring the source-branch commits that have landed since the integratio
    - `git commit -m "Merge branch '<testing-branch>' into dev/<suffix>"`
 2. Ask the user before pushing. If approved:
    - `git push -u origin dev/<suffix>`
+
+## Build verification
+
+Run this between "index clean" and "commit" on every merge — it guarantees each merge commit actually compiles, and lets us abort cleanly on failure instead of patching up a broken merge in a follow-up commit.
+
+1. Decide what to build (check in this order):
+   - If `basename "$(pwd)"` is `cloud_backend`: `dotnet build AuraServices.sln`.
+   - Else if the working directory contains a `*.sln` or `*.csproj`: `dotnet build` (dotnet auto-picks the sln/csproj).
+   - Else: skip — no recognised build tooling, proceed straight to commit.
+
+2. Run the build. Check exit code and error count.
+
+3. On failure:
+   - **Clean merge (no conflicts resolved)**: `git merge --abort` and stop. Report errors — the branch is back to its pre-merge state.
+   - **After conflict resolution**: do **not** auto-abort. Report errors to the user and ask how to proceed — their approved resolutions shouldn't be silently discarded.
+
+4. On success: proceed to the commit step.
 
 ## Output format
 
@@ -120,3 +138,4 @@ End with a one-screen summary:
 - **Never force-update an existing `dev/<suffix>`.** If fast-forward pull fails or local/remote have diverged, stop and report — do not reset, rebase, or force-push.
 - **Never guess the host.** If the remote URL isn't clearly GitHub or Bitbucket, stop and ask.
 - **Never resolve conflicts without the user's explicit approval** of the proposed resolutions, file by file.
+- **Never commit a merge without passing the build first.** Clean-merge failures must be aborted; conflict-resolved failures must be surfaced to the user — never left for a follow-up fix commit.
