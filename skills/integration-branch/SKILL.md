@@ -127,7 +127,7 @@ End with the summary template below. Fill placeholders with concrete values; do 
 
 ### Summary
 
-**Only branch modified:** `dev/<suffix>`
+**Integration branch:** `dev/<suffix>`
 - Status: <created | reused>
 - Merge `<source>` INTO `dev/<suffix>`: <N commits brought in | skipped (Path A — fresh branch)> · conflicts: <N resolved | none>
 - Merge `origin/<testing-branch>` INTO `dev/<suffix>`: <N commits brought in | no-op, already up to date> · conflicts: <N resolved | none>
