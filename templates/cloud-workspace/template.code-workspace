@@ -1,12 +1,19 @@
 {
     "folders": [
         {
+            "path": "."
+        },
+        {
             "name": "v2-portal",
             "path": "v2-portal"
         },
         {
             "name": "cloud_backend",
             "path": "cloud_backend"
+        },
+        {
+            "name": ".temp",
+            "path": ".temp"
         }
     ],
     "settings": {
