@@ -13,6 +13,21 @@ Automate multi-project workspace provisioning for v2-portal + cloud_backend into
 
 ## Instructions for the AI
 
+### Hard rule — no `cd` in any command
+
+Every shell command in this runbook **MUST** be cwd-independent. The Bash tool may run commands in parallel and each call starts in its own shell — a `cd "$X" && cmd` that gets shortened to just `cmd` will land in the wrong directory and silently target the wrong files. Eliminate the failure mode by never relying on cwd in the first place.
+
+Use these forms (already baked into the steps below — do not "improve" them):
+
+| Operation | Use | Never use |
+|-----------|-----|-----------|
+| git command in a repo | `git -C "$REPO" <subcmd>` | `cd "$REPO" && git <subcmd>` |
+| npm install | `npm install --prefix "$DIR"` | `cd "$DIR" && npm install` |
+| dotnet restore | `dotnet restore "$DIR/AuraServices.sln"` (full path to .sln) | `cd "$DIR" && dotnet restore AuraServices.sln` |
+| cp / mkdir / sed | already use absolute paths | n/a |
+
+If a step's command block in this runbook shows the correct form, run it verbatim. Do not re-paraphrase it into a `cd X && ...` shape, even when issuing multiple commands in parallel.
+
 When invoked (example: `/setup-cloud-workspace ACP-1077`):
 
 ### Step 1 — Parse input
@@ -72,8 +87,8 @@ Check if `${CLOUD_WS_ROOT}/${KEY}` already exists. Store the result (exists / do
 Run `git fetch --all --prune` in **both** repos. Ignore non-fatal warnings about deleted refs. Run these in parallel if possible.
 
 ```bash
-cd "$CLOUD_WS_PORTAL_REPO" && git fetch --all --prune
-cd "$CLOUD_WS_BACKEND_REPO" && git fetch --all --prune
+git -C "$CLOUD_WS_PORTAL_REPO" fetch --all --prune
+git -C "$CLOUD_WS_BACKEND_REPO" fetch --all --prune
 ```
 
 #### 3c. Discover branches
@@ -161,11 +176,13 @@ The default base branches are:
 - **v2-portal:** `main`
 - **cloud_backend:** `master`
 
-Announce the branch being created and proceed (no confirmation needed — the user already approved via the prefix selection in Step 4):
+Announce the branch being created and proceed (no confirmation needed — the user already approved via the prefix selection in Step 4).
+
+**Use `git -C <repo>` — never `cd <repo> && git ...`.** The `-C` form is cwd-independent and cannot be misrouted when commands are issued in parallel.
 
 ```bash
-cd "$CLOUD_WS_PORTAL_REPO" && git branch --no-track {branchName} origin/{portalDefault}
-cd "$CLOUD_WS_BACKEND_REPO" && git branch --no-track {branchName} origin/{backendDefault}
+git -C "$CLOUD_WS_PORTAL_REPO" branch --no-track {branchName} origin/{portalDefault}
+git -C "$CLOUD_WS_BACKEND_REPO" branch --no-track {branchName} origin/{backendDefault}
 ```
 
 The `--no-track` flag is critical: without it, git inherits the upstream from the base branch, so the new branch would end up tracking `origin/main` / `origin/master` instead of its own remote branch of the same name. Leave the upstream unset at creation — `git push -u origin {branchName}` on first push will set it to the correct remote branch.
@@ -180,11 +197,11 @@ mkdir -p "${CLOUD_WS_ROOT}/${KEY}"
 
 ### Step 7 — Create worktrees
 
-From each source repo, create the worktree in the workspace directory:
+From each source repo, create the worktree in the workspace directory. Use `git -C` so the command is cwd-independent:
 
 ```bash
-cd "$CLOUD_WS_PORTAL_REPO" && git worktree add "${CLOUD_WS_ROOT}/${KEY}/v2-portal" {branchName}
-cd "$CLOUD_WS_BACKEND_REPO" && git worktree add "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" {branchName}
+git -C "$CLOUD_WS_PORTAL_REPO" worktree add "${CLOUD_WS_ROOT}/${KEY}/v2-portal" {branchName}
+git -C "$CLOUD_WS_BACKEND_REPO" worktree add "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" {branchName}
 ```
 
 Report success or failure for each. On failure, surface the error and stop.
@@ -194,7 +211,7 @@ Report success or failure for each. On failure, surface the error and stop.
 Run submodule initialization in the **cloud_backend** worktree only. Skip v2-portal — it has no submodules and the command always fails there. This is **non-blocking** — if it fails, report the warning but continue.
 
 ```bash
-cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && git submodule update --init --recursive
+git -C "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" submodule update --init --recursive
 ```
 
 ### Step 9 — Copy .vscode settings
@@ -233,9 +250,9 @@ On macOS the template is used as-is with no patching needed.
 
 Use the dependency install answer from Step 4 (already collected upfront). **Do not ask again.**
 
-- If the user opted in, run both:
-  - **v2-portal:** `cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install`
-  - **cloud_backend:** `cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln`
+- If the user opted in, run both. **Use cwd-independent forms — do NOT use `cd X && ...`.** Pass the workspace path explicitly so the command cannot land in the wrong directory, even if issued in parallel with other tool calls:
+  - **v2-portal:** `npm install --prefix "${CLOUD_WS_ROOT}/${KEY}/v2-portal"`
+  - **cloud_backend:** `dotnet restore "${CLOUD_WS_ROOT}/${KEY}/cloud_backend/AuraServices.sln"`
   Report success or failure for each.
 
 - If the user opted out, include the manual commands in the summary.
@@ -259,8 +276,8 @@ Files created:
 Dependencies: {installed | skipped}
 {If skipped, show:
   Manual install:
-    cd "${CLOUD_WS_ROOT}/${KEY}/v2-portal" && npm install
-    cd "${CLOUD_WS_ROOT}/${KEY}/cloud_backend" && dotnet restore AuraServices.sln
+    npm install --prefix "${CLOUD_WS_ROOT}/${KEY}/v2-portal"
+    dotnet restore "${CLOUD_WS_ROOT}/${KEY}/cloud_backend/AuraServices.sln"
 }
 
 Open in VS Code:
