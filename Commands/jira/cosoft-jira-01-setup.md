@@ -35,10 +35,14 @@ When this command is invoked:
 - Determine the full path to the task folder: {PROJECT_ROOT}/.temp/{TASK_NUMBER}/
 - The Claude home directory for global tooling is `~/.claude`.
 - **Workspace mode detection:**
-  - Run `git rev-parse --is-inside-work-tree` from PROJECT ROOT
-  - **If it IS a git repo:** Set `WORKSPACE_MODE` to `false` (single-project mode)
-  - **If it is NOT a git repo (command fails/errors):** Scan immediate subdirectories of PROJECT ROOT for git repos (run `git rev-parse --is-inside-work-tree` in each). If any subdirectory is a git repo, set `WORKSPACE_MODE` to `true` (multi-repo workspace). Store the list of git sub-repo directory names as `GIT_REPOS`.
-  - If neither the root nor any subdirectories are git repos, set `WORKSPACE_MODE` to `false` and note that no git features will be available
+  - **CRITICAL — avoid noisy `fatal: not a git repository` errors.** Inspect PROJECT ROOT *before* running any git command. Run `ls -la` (or equivalent) on PROJECT ROOT and check for these workspace-mode signals:
+    - A `*.code-workspace` file exists at PROJECT ROOT
+    - No `.git` file or directory exists at PROJECT ROOT
+    - Two or more immediate subdirectories that look like project repos exist
+  - **If ANY workspace-mode signal is present:** assume multi-repo workspace. Do NOT run `git rev-parse` at the root (it will fail noisily). Instead, probe each immediate subdirectory directly with `git -C {subdir} rev-parse --is-inside-work-tree 2>/dev/null` (the `-C` flag and `2>/dev/null` keep output clean). Set `WORKSPACE_MODE` to `true` and store the list of git sub-repo directory names as `GIT_REPOS`. Probe subdirs in parallel — these calls are independent.
+  - **If no workspace-mode signals are present:** run `git -C {PROJECT_ROOT} rev-parse --is-inside-work-tree 2>/dev/null` once. If it succeeds, set `WORKSPACE_MODE` to `false` (single-project mode). If it fails, fall back to scanning immediate subdirectories as above.
+  - If neither the root nor any subdirectories are git repos, set `WORKSPACE_MODE` to `false` and note that no git features will be available.
+  - **Never batch the `ls` and the git probe in parallel** — the probe's necessity depends on what `ls` reveals. Run `ls` first, then decide.
 
 ### LOAD ENVIRONMENT VARIABLES
 
