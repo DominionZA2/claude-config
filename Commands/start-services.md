@@ -49,7 +49,7 @@ dotnet 'C:\Source\cloud_backend\<Project>\bin\Debug\net8.0\<Dll>'
 
 | Project                               | Dll                                       | Port |
 |---------------------------------------|-------------------------------------------|------|
-| CloudGatewayApi                       | CloudGatewayApi.dll                       | 5101 |
+| CloudGatewayApi                       | CloudGatewayApi.dll                       | 5000 |
 | Aura.Microservice.Auth                | Aura.Microservice.Auth.dll                | 5002 |
 | Aura.Microservice.Brand               | Aura.Microservice.Brand.dll               | 5003 |
 | Aura.Microservice.ExternalIntegration | Aura.Microservice.ExternalIntegration.dll | 5011 |
@@ -64,7 +64,7 @@ dotnet 'C:\Source\cloud_backend\<Project>\bin\Debug\net8.0\<Dll>'
 Report: `Waiting for ports to bind…`
 
 ```powershell
-$expected = 5002,5003,5004,5006,5007,5008,5010,5011,5101
+$expected = 5000,5002,5003,5004,5006,5007,5008,5010,5011
 $deadline = (Get-Date).AddSeconds(60)
 while ((Get-Date) -lt $deadline) {
     $listening = (Get-NetTCPConnection -State Listen | Where-Object { $expected -contains $_.LocalPort }).LocalPort | Sort-Object -Unique
