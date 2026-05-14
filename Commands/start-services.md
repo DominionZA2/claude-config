@@ -2,6 +2,14 @@
 
 Start the full Cloud Backend service set. Run from the `cloud_backend` repo root.
 
+## Arguments
+
+- `--monitor` (alias `-m`): after the services are up, start a Monitor on the gateway log and surface any errors that appear during testing. Without this flag the services just run in the background and no log watching is done.
+
+Report which mode you're running in at the start. Either:
+- `Starting services (no log monitoring).`
+- `Starting services with gateway log monitoring enabled.`
+
 ## Steps
 
 ### 1. Kill any running services
@@ -59,6 +67,8 @@ dotnet 'C:\Source\cloud_backend\<Project>\bin\Debug\net8.0\<Dll>'
 | Aura.Microservice.OnlineOrdering      | Aura.Microservice.OnlineOrdering.dll      | 5007 |
 | Aura.Microservice.Payment             | Aura.Microservice.Payment.dll             | 5008 |
 
+The Gateway binds HTTPS on 5000 (HTTP fallback on 5001 also listens). All other services are HTTP.
+
 ### 4. Wait for ports to bind (up to 60s)
 
 Report: `Waiting for ports to bind…`
@@ -89,3 +99,25 @@ Sort by service name. Log file path is `%TEMP%\aura-<DllWithoutExtension><yyyyMM
 ```
 
 Then list the background-task IDs so logs can be tailed via the task output captures if the Serilog file is locked.
+
+### 6. Start gateway log monitoring (only if `--monitor` was passed)
+
+Skip this entire step if the flag wasn't passed.
+
+Use the Monitor tool to tail the gateway Serilog file with a filter for error-level entries. Each matching line becomes a single notification, so context only grows when something actually goes wrong.
+
+- **Target file**: `C:\Users\msmit\AppData\Local\Temp\aura-CloudGatewayApi<yyyyMMdd>.log` (compute today's date in `yyyyMMdd` for the suffix; this is also the gateway row from the summary table).
+- **Filter regex**: `\[(ERR|FTL)\]|Unhandled exception`
+  - Catches Serilog `[ERR]` and `[FTL]` level tokens plus any bare unhandled-exception lines.
+  - Does **not** match stack-trace `at ...` lines on purpose — when a notification fires you can Read the log file around that timestamp to grab the surrounding stack.
+
+After starting Monitor, report a single line: `Watching gateway log for errors — I'll surface anything that matches [ERR]/[FTL] or "Unhandled exception".`
+
+When a notification arrives later in the session:
+- Read the gateway log file around the matching line to capture the surrounding stack/context.
+- Summarise the error in chat (file:line of the throwing code if identifiable, what triggered it, severity).
+- Don't try to fix anything proactively — just surface it. The user will direct any follow-up.
+
+Notes for the assistant:
+- One Monitor on the gateway log is enough — errors from downstream microservices propagate through the gateway. Don't spin up Monitors on the other 8 services unless the user asks.
+- The filename has today's date baked in. If services are still running past midnight Serilog rolls to a new file and the old Monitor goes silent; mention this if the user keeps services up across a day boundary.
