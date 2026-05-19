@@ -92,7 +92,7 @@ Time range conversions:
 
 ### 5. Execute the Query
 
-Use curl to query the Grafana Loki API:
+Use curl to query the Grafana Loki API. **Pipe the response straight into `jq` — do not save the JSON to a file and re-open it from another interpreter.** Saving + re-opening is a frequent source of cross-platform bugs (POSIX vs Windows path mismatches, working-directory confusion, interpreter selection). A pipeline avoids all of that and works identically on macOS, Linux, and Windows Git Bash.
 
 ```bash
 # Calculate timestamps
@@ -102,10 +102,23 @@ START_TIME=$(( ($(date +%s) - <seconds>) ))000000000
 # URL encode the query
 ENCODED_QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$LOGQL_QUERY'))")
 
-# Execute query
+# Execute query and summarize in one pipeline
 curl -s \
   -u "${GRAFANA_LOKI_USERNAME}:${GRAFANA_LOKI_PASSWORD}" \
-  "${GRAFANA_LOKI_URL}/loki/api/v1/query_range?query=${ENCODED_QUERY}&start=${START_TIME}&end=${END_TIME}&limit=<limit>&direction=<direction>"
+  "${GRAFANA_LOKI_URL}/loki/api/v1/query_range?query=${ENCODED_QUERY}&start=${START_TIME}&end=${END_TIME}&limit=<limit>&direction=<direction>" \
+  | jq '{status, streams: (.data.result | length), entries: ([.data.result[].values[]] | length)}'
+```
+
+**Response size warning:** a broad query (e.g. all errors in production over several hours) can return multi-megabyte JSON with hundreds of streams. Never cat the raw response to stdout — it will overwhelm the terminal/context. Always summarize first with `jq` (counts, group-by service, top-N patterns), then drill into specifics.
+
+Useful follow-up `jq` patterns once you have the pipeline working:
+
+```bash
+# Count entries per service_name
+... | jq -r '.data.result[] | "\(.stream.service_name // .stream.app // "unknown")\t\(.values | length)"' | sort | awk '{a[$1]+=$2} END {for (k in a) print a[k], k}' | sort -rn
+
+# Show first N log lines (timestamp + message)
+... | jq -r '.data.result[].values[] | "\(.[0])\t\(.[1])"' | head -n 20
 ```
 
 ### 6. Format and Display Results

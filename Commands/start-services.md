@@ -43,17 +43,13 @@ dotnet build AuraServices.sln -nr:false /property:GenerateFullPaths=true '/conso
 
 Report: `Building AuraServices.sln…` before, then `Build succeeded (N warnings)` or `Build failed — last 30 lines:` followed by the tail. If failed, stop.
 
-### 3. Launch the 9 services
+### 3. Resolve repo root and discover which services exist
 
-Report: `Launching 9 services in parallel…` then launch each as a separate background PowerShell call (`run_in_background: true`). Run all 9 in parallel.
+**Repo root is the current working directory** — not a hardcoded path. Branches may live in worktrees (e.g. `C:\Source\cloud-worktrees\<branch>\cloud_backend`), and the `Build` step ran against `AuraServices.sln` in the cwd, so the freshly built binaries are under the cwd. Use the cwd as the base for every project path below.
 
-For each row below, the command is:
+Before launching, **probe each project's built dll**. Branches can remove or rename microservices (the Auth project, for example, has been removed in some feature branches), so the candidate list below is not authoritative — the filesystem is. For each row, check `Test-Path '<cwd>\<Project>\bin\Debug\net8.0\<Dll>'`. Build the actual launch set from rows where the dll exists.
 
-```powershell
-$env:ASPNETCORE_ENVIRONMENT = 'Development'
-Set-Location 'C:\Source\cloud_backend\<Project>'
-dotnet 'C:\Source\cloud_backend\<Project>\bin\Debug\net8.0\<Dll>'
-```
+Candidate services:
 
 | Project                               | Dll                                       | Port |
 |---------------------------------------|-------------------------------------------|------|
@@ -67,14 +63,33 @@ dotnet 'C:\Source\cloud_backend\<Project>\bin\Debug\net8.0\<Dll>'
 | Aura.Microservice.OnlineOrdering      | Aura.Microservice.OnlineOrdering.dll      | 5007 |
 | Aura.Microservice.Payment             | Aura.Microservice.Payment.dll             | 5008 |
 
+Report which services were found and which were skipped, e.g.:
+```
+Found 8 services to launch. Skipping: Aura.Microservice.Auth (dll not present — likely removed in this branch).
+```
+
 The Gateway binds HTTPS on 5000 (HTTP fallback on 5001 also listens). All other services are HTTP.
 
-### 4. Wait for ports to bind (up to 60s)
+### 4. Launch the discovered services
+
+Report: `Launching N services in parallel…` (use the actual count from step 3), then launch each as a separate background PowerShell call (`run_in_background: true`). Run all in parallel.
+
+For each row in the launch set, the command is:
+
+```powershell
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+Set-Location '<cwd>\<Project>'
+dotnet '<cwd>\<Project>\bin\Debug\net8.0\<Dll>'
+```
+
+### 5. Wait for ports to bind (up to 60s)
 
 Report: `Waiting for ports to bind…`
 
+Build `$expected` from the **launch set decided in step 3** (not the full 9), so a missing project doesn't make the wait time out forever.
+
 ```powershell
-$expected = 5000,5002,5003,5004,5006,5007,5008,5010,5011
+$expected = <ports of the services you actually launched>
 $deadline = (Get-Date).AddSeconds(60)
 while ((Get-Date) -lt $deadline) {
     $listening = (Get-NetTCPConnection -State Listen | Where-Object { $expected -contains $_.LocalPort }).LocalPort | Sort-Object -Unique
@@ -87,7 +102,7 @@ If any background task reports `failed` before all ports bind, read its output f
 
 If the 60s deadline hits with ports still missing, list the missing ports/services explicitly — don't just say "timeout".
 
-### 5. Print the summary
+### 6. Print the summary
 
 Sort by service name. Log file path is `%TEMP%\aura-<DllWithoutExtension><yyyyMMdd>.log`.
 
@@ -100,7 +115,7 @@ Sort by service name. Log file path is `%TEMP%\aura-<DllWithoutExtension><yyyyMM
 
 Then list the background-task IDs so logs can be tailed via the task output captures if the Serilog file is locked.
 
-### 6. Start gateway log monitoring (only if `--monitor` was passed)
+### 7. Start gateway log monitoring (only if `--monitor` was passed)
 
 Skip this entire step if the flag wasn't passed.
 

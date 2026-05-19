@@ -49,6 +49,8 @@ __pycache__/
 
 # Claude Code runtime state
 tasks/
+settings.local.json
+.last-cleanup
 
 # Temporary files
 *.tmp
