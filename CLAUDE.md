@@ -21,3 +21,66 @@ Endpoints:
 - PR diff: `GET .../pullrequests/{id}/diff`
 - PR comments: `GET .../pullrequests/{id}/comments`
 - PR activity: `GET .../pullrequests/{id}/activity`
+
+# Local services (Docker)
+
+MySQL, Redis, and CouchDB all run locally as Docker containers. Do NOT look for a system-installed `mysql` / `redis-cli` / etc. — they're inside containers. Run commands via `docker exec`. All credentials below are local-dev only.
+
+## MySQL
+
+| Field      | Value                                    |
+|------------|------------------------------------------|
+| Container  | `mysql8`                                 |
+| Host:Port  | `localhost:3306`                         |
+| Root login | `root` / `P@ssw0rd1`                     |
+| App login  | `aura` / `P@ssw0rd1`                     |
+
+Databases on the instance (from `CloudGatewayApi/appsettings.json` `ConnectionStrings`):
+`aura_cloud_auth`, `aura_cloud_brand`, `aura_cloud_device`, `aura_cloud_invoicing`, `aura_cloud_lookup`, `aura_cloud_menu`, `aura_cloud_online_ordering`, `aura_cloud_payment`, `aura_cloud_reports`, `aura_cloud_stock`, `syncmanager`.
+
+Run a query:
+```bash
+docker exec -i mysql8 mysql -uroot -pP@ssw0rd1 aura_cloud_auth -e "SELECT 1;"
+```
+
+For multi-line / parameterised SQL, prefer stdin:
+```bash
+docker exec -i mysql8 mysql -uroot -pP@ssw0rd1 aura_cloud_auth <<'SQL'
+SELECT COUNT(*) FROM StoreGroup;
+SQL
+```
+
+## Redis
+
+| Field     | Value           |
+|-----------|-----------------|
+| Container | `redis`         |
+| Host:Port | `localhost:6379`|
+| Auth      | none            |
+
+Run a command:
+```bash
+docker exec -i redis redis-cli PING
+docker exec -i redis redis-cli KEYS '*'
+```
+
+## CouchDB
+
+| Field     | Value                          |
+|-----------|--------------------------------|
+| Container | `couchdb-mobile-integration`   |
+| Base URL  | `http://localhost:5984`        |
+| Auth      | `aura` / `P@ssw0rd1` (basic)   |
+
+HTTP API — no exec needed:
+```bash
+curl -u aura:P@ssw0rd1 http://localhost:5984/_all_dbs
+```
+
+PowerShell:
+```powershell
+$pair = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes('aura:P@ssw0rd1'))
+Invoke-RestMethod -Uri 'http://localhost:5984/_all_dbs' -Headers @{ Authorization = "Basic $pair" }
+```
+
+Verify with `docker ps` if a container appears down — names above are what's running today.
