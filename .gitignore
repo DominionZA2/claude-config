@@ -51,6 +51,12 @@ __pycache__/
 tasks/
 settings.local.json
 .last-cleanup
+daemon/
+daemon.lock
+daemon.status.json
+daemon-auth-status.json
+daemon-auth-cooldown
+jobs/
 
 # Temporary files
 *.tmp
