@@ -41,7 +41,7 @@ Do every item through this exact cycle. Do not skip steps. Do not batch.
 7. **Live verification (if applicable).** If the change touches a runtime execution path (a controller, a service the running stack depends on, a sync-doc refresh, etc.), restart the relevant local services and exercise the path via curl / a real client. If the change is purely internal logic exercised by unit tests, this step is skipped — say so explicitly.
 8. **Pause for human review.** Tell the user: which files changed, what tests ran (with pass count), and what live verification was or wasn't done. Wait. Do not propose to commit. Do not start the next item.
 9. **Commit only on explicit human ask.** When the user says to commit, write a single-purpose commit message describing only this item's change. Never bundle multiple items into one commit.
-10. **Tick the box and report progress.** After the commit lands, update the HTML file to mark this item complete (set the checkbox state in localStorage is the user's job via the browser — your job is to leave the file's content alone unless you need to add a new item or fix a description). Tell the user the next item up and wait for their go.
+10. **Tick the box and report progress.** After the commit lands, edit the HTML file directly to mark this item complete: add `done` to the `.item` element's class list (`class="item done"`), add `checked` to its checkbox (`<input type="checkbox" checked>`), and bump the progress count in the header if it's a hard-coded number. Tell the user the next item up and wait for their go. The HTML file is the authoritative state — the user refreshes the browser and sees the new state.
 
 ### Hard rules — non-negotiable
 
@@ -119,7 +119,7 @@ Lead with the verdict: ship / iterate / abort. If iterate, list the specific lin
 
 ## HTML template
 
-The HTML file is self-contained: inline CSS, inline JS, persistent state via `localStorage`. Use a versioned localStorage key (`auth-opt-checklist-v1` → use a key derived from the workstream name).
+The HTML file is self-contained: inline CSS, inline JS. **The file itself is the authoritative state** — completion is encoded as `class="item done"` on the wrapper and a `checked` attribute on the checkbox. The JS does not persist anything; in-browser toggles are ephemeral and disappear on refresh. This keeps the file and the visual state in lockstep with what's actually been committed.
 
 ```html
 <!doctype html>
@@ -261,29 +261,14 @@ The HTML file is self-contained: inline CSS, inline JS, persistent state via `lo
 -->
 
 <script>
+// The HTML file is the authoritative state — items marked done via `class="done"`
+// on the `.item` and `checked` on the checkbox are the source of truth.
+// In-browser toggles are ephemeral and reset on refresh.
 (function () {
-  const KEY = "{LOCALSTORAGE_KEY}";
   const items = Array.from(document.querySelectorAll(".item"));
   const checkboxes = items.map(i => i.querySelector("input[type=checkbox]"));
   const progress = document.getElementById("progress");
 
-  function load() {
-    let stored = {};
-    try { stored = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (_) {}
-    items.forEach((item, idx) => {
-      const id = item.dataset.id;
-      const cb = checkboxes[idx];
-      if (cb.disabled) return;
-      cb.checked = !!stored[id];
-      item.classList.toggle("done", cb.checked);
-    });
-    updateProgress();
-  }
-  function save() {
-    const stored = {};
-    items.forEach((item, idx) => { stored[item.dataset.id] = checkboxes[idx].checked; });
-    try { localStorage.setItem(KEY, JSON.stringify(stored)); } catch (_) {}
-  }
   function updateProgress() {
     const total = checkboxes.filter(cb => !cb.disabled).length;
     const done = checkboxes.filter(cb => !cb.disabled && cb.checked).length;
@@ -292,21 +277,19 @@ The HTML file is self-contained: inline CSS, inline JS, persistent state via `lo
   checkboxes.forEach((cb, idx) => {
     cb.addEventListener("change", () => {
       items[idx].classList.toggle("done", cb.checked);
-      save();
       updateProgress();
     });
   });
   window.resetAll = function () {
-    if (!confirm("Reset all checkboxes?")) return;
+    if (!confirm("Reset all checkboxes in-browser only? (File state is unchanged — refresh to restore.)")) return;
     checkboxes.forEach((cb, idx) => {
       if (cb.disabled) return;
       cb.checked = false;
       items[idx].classList.remove("done");
     });
-    save();
     updateProgress();
   };
-  load();
+  updateProgress();
 })();
 </script>
 
