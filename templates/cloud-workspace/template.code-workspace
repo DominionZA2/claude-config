@@ -1,9 +1,6 @@
 {
     "folders": [
         {
-            "path": "."
-        },
-        {
             "name": "v2-portal",
             "path": "v2-portal"
         },

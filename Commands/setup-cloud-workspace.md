@@ -191,8 +191,11 @@ Report success or failure for each. On failure, surface the error and stop.
 
 ### Step 6 — Create workspace root
 
+Create the workspace root **and** the `.temp` folder. `.temp` holds task-related documentation that gets shared, and the `.code-workspace` file references it as a folder root — if it doesn't exist on disk it shows greyed-out/broken in VS Code, so create it here.
+
 ```bash
 mkdir -p "${CLOUD_WS_ROOT}/${KEY}"
+mkdir -p "${CLOUD_WS_ROOT}/${KEY}/.temp"
 ```
 
 ### Step 7 — Create worktrees
@@ -270,6 +273,7 @@ Workspace: ${CLOUD_WS_ROOT}/${KEY}
 Files created:
   - ${KEY}/${KEY}.code-workspace
   - ${KEY}/Agents.md
+  - ${KEY}/.temp/            (shared task docs)
   - ${KEY}/v2-portal/        (worktree)
   - ${KEY}/cloud_backend/    (worktree)
 

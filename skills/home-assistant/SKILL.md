@@ -37,6 +37,12 @@ Commands:
 | `areas` | Area registry (WebSocket) — area names and ids, used to correlate entities/devices to rooms. |
 | `rest <METHOD> <PATH> [JSON_BODY]` | Raw REST call. Use for anything not covered above. |
 
+> **Windows/git-bash note:** an arg like `/api/config` gets mangled by MSYS path
+> conversion into `C:/Program Files/Git/api/config` → HA returns 404. `ha.mjs`
+> now auto-repairs this (recovers from the first `/api/`), so raw `rest` paths
+> work from either the Bash tool or PowerShell. If you ever bypass the helper,
+> drop the leading slash (`api/config`) in bash or use PowerShell.
+
 Examples:
 ```bash
 node ~/.claude/skills/home-assistant/ha.mjs entities light kitchen

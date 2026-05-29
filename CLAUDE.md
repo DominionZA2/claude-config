@@ -1,3 +1,6 @@
+# Working rules
+Follow the rules in ai-working-rules.md and ai-checkpoint-protocol.md (both in this .claude directory) for all work in every session.
+
 # Bitbucket PRs
 
 Repos on `bitbucket.org` use an Atlassian API token stored in Windows Credential Manager. Do NOT spend time probing env vars, `gh`, or asking the user — go straight to this recipe.

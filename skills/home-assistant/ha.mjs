@@ -45,6 +45,11 @@ function loadConfig() {
 
 async function rest(method, path, body) {
   const cfg = loadConfig();
+  // Repair git-bash/MSYS POSIX path conversion on Windows: an arg like
+  // "/api/config" arrives here as "C:/Program Files/Git/api/config". Any HA
+  // REST path begins with /api/, so recover from the first /api/ onwards.
+  const m = path.match(/\/api\/.*/s);
+  if (m) path = m[0];
   const url = cfg.url + (path.startsWith("/") ? path : "/" + path);
   const res = await fetch(url, {
     method,
