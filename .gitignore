@@ -57,6 +57,7 @@ daemon.status.json
 daemon-auth-status.json
 daemon-auth-cooldown
 jobs/
+hooks/state/
 
 # Temporary files
 *.tmp
