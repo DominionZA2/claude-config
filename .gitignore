@@ -85,3 +85,4 @@ pids/
 
 # Dependency directories
 node_modules/
+skills/aura-portal/creds.local.json

@@ -51,7 +51,10 @@
       "PowerShell([Environment]::GetEnvironmentVariables\\('User'\\).Keys | Where-Object { $_ -match 'TRELLO' }; [Environment]::GetEnvironmentVariables\\('Machine'\\).Keys | Where-Object { $_ -match 'TRELLO' })",
       "PowerShell(\"TRELLO_KEY length: $\\($env:TRELLO_KEY.Length\\)\"; \"TRELLO_TOKEN length: $\\($env:TRELLO_TOKEN.Length\\)\"; \"PID: $PID\")",
       "PowerShell($r = Invoke-RestMethod -Uri \"https://api.trello.com/1/members/me?key=$env:TRELLO_KEY&token=$env:TRELLO_TOKEN\"; \"OK: $\\($r.fullName\\) \\(@$\\($r.username\\)\\) — id=$\\($r.id\\), email=$\\($r.email\\)\")",
-      "Bash(cp /Users/michaelsmit/.claude/templates/cloud-workspace/*:*)"
+      "Bash(cp /Users/michaelsmit/.claude/templates/cloud-workspace/*:*)",
+      "Bash(cp \"/Users/michaelsmit/.claude/templates/cloud-workspace/Agents.md\" \"/Users/michaelsmit/Source/cloud-worktrees/API-763/Agents.md\")",
+      "Bash(cp \"/Users/michaelsmit/.claude/templates/cloud-workspace/template.code-workspace\" \"/Users/michaelsmit/Source/cloud-worktrees/API-763/API-763.code-workspace\")",
+      "Skill(update-config)"
     ],
     "deny": []
   },
