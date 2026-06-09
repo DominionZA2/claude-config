@@ -86,3 +86,9 @@ pids/
 # Dependency directories
 node_modules/
 skills/aura-portal/creds.local.json
+
+# Commands & skills now live in the shared ai-context repo (symlinked in here)
+/Commands
+/commands
+/Skills
+/skills

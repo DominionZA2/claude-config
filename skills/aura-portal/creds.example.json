@@ -1,5 +1,0 @@
-{
-  "users": {
-    "<alias>": { "platform": "test", "email": "user@example.com", "password": "..." }
-  }
-}
