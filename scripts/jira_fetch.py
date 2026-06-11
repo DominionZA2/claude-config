@@ -158,7 +158,11 @@ def fetch_issue(issue_key, download_dir, metadata_only=False):
                     import requests
                     from requests.auth import HTTPBasicAuth
 
-                    target_file = download_path / f"{issue_key}-{filename}"
+                    prefix = f"{issue_key}-"
+                    if filename.lower().startswith(prefix.lower()):
+                        target_file = download_path / filename
+                    else:
+                        target_file = download_path / f"{prefix}{filename}"
                     response = requests.get(
                         content_url,
                         auth=HTTPBasicAuth(os.environ['JIRA_EMAIL'], os.environ['JIRA_TOKEN']),
