@@ -33,7 +33,7 @@ MySQL, Redis, and CouchDB all run locally as Docker containers. Do NOT look for 
 
 | Field      | Value                                    |
 |------------|------------------------------------------|
-| Container  | `mysql8`                                 |
+| Container  | `MySql`                                 |
 | Host:Port  | `localhost:3306`                         |
 | Root login | `root` / `P@ssw0rd1`                     |
 | App login  | `aura` / `P@ssw0rd1`                     |
@@ -43,12 +43,12 @@ Databases on the instance (from `CloudGatewayApi/appsettings.json` `ConnectionSt
 
 Run a query:
 ```bash
-docker exec -i mysql8 mysql -uroot -pP@ssw0rd1 aura_cloud_auth -e "SELECT 1;"
+docker exec -i MySql mysql -uroot -pP@ssw0rd1 aura_cloud_auth -e "SELECT 1;"
 ```
 
 For multi-line / parameterised SQL, prefer stdin:
 ```bash
-docker exec -i mysql8 mysql -uroot -pP@ssw0rd1 aura_cloud_auth <<'SQL'
+docker exec -i MySql mysql -uroot -pP@ssw0rd1 aura_cloud_auth <<'SQL'
 SELECT COUNT(*) FROM StoreGroup;
 SQL
 ```
