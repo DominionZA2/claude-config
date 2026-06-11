@@ -32,3 +32,8 @@ To make these load every session, they must be referenced from the global CLAUDE
 
 ## Don't overstate done
 - "Done" means verified with evidence. If a step was skipped, bypassed (e.g. --no-verify), or not run, say so plainly.
+
+## Demo UI/graphics live in the browser, don't make me read about them
+- When proposing layouts, icons, animations, or any visual change with options, build a self-contained HTML preview and `open` it in the browser (e.g. `open -a "Google Chrome" file://...`) so it appears live on screen. Don't ask the user to choose from written descriptions or static screenshots alone.
+- Show real animation (let it play/loop), all variants side by side, and the change in its actual context (the real component/card), linking the real stylesheet where possible.
+- Static screenshots are fine for a quick check; for "which do you prefer" decisions, put it on the screen and let them react.

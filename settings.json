@@ -57,6 +57,7 @@
       "C:\\source\\cloud_backend\\Tests\\Aura.Stock.Tests\\Processed"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -104,10 +105,11 @@
     "plugin-dev@claude-code-plugins": true,
     "claude-supermemory@supermemory-plugins": true
   },
-  "autoMemoryEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
+  "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
+  "switchModelsOnFlag": false,
   "codeStyle": {
     "commitCoAuthor": false
   }
