@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP": "1"
   },
   "attribution": {
     "commit": "",
@@ -31,7 +32,11 @@
       "Edit(//c/Source/**)",
       "Write(//c/Source/**)",
       "Edit(//c/source/**)",
-      "Write(//c/source/**)"
+      "Write(//c/source/**)",
+      "Edit(//Users/michaelsmit/.claude/skills/**)",
+      "Write(//Users/michaelsmit/.claude/skills/**)",
+      "Edit(//Users/michaelsmit/ai-context/**)",
+      "Write(//Users/michaelsmit/ai-context/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
@@ -103,13 +108,24 @@
   "enabledPlugins": {
     "ralph-wiggum@claude-code-plugins": false,
     "plugin-dev@claude-code-plugins": true,
-    "claude-supermemory@supermemory-plugins": true
+    "claude-supermemory@supermemory-plugins": true,
+    "codex@openai-codex": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
+  "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "switchModelsOnFlag": false,
+  "agentPushNotifEnabled": true,
   "codeStyle": {
     "commitCoAuthor": false
   }

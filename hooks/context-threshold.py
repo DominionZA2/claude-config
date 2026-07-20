@@ -42,6 +42,7 @@ THRESHOLDS = [
 # 200k session from a 1M one by name alone. This user runs Opus 4.8 with the
 # 1M-context beta, so default it to 1M; everything else to 200k. Edit freely.
 MODEL_WINDOWS = {
+    "claude-fable-5": 1_000_000,
     "claude-opus-4-8": 1_000_000,
 }
 DEFAULT_WINDOW = 200_000

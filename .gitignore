@@ -92,3 +92,8 @@ skills/aura-portal/creds.local.json
 /commands
 /Skills
 /skills
+session-env/
+teams/
+plugins/data/
+.last-update-result.json
+plugins/.last_inuse_sweep

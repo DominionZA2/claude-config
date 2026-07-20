@@ -1,5 +1,6 @@
-# Working rules
-Follow the rules in ai-working-rules.md and ai-checkpoint-protocol.md (both in this .claude directory) for all work in every session.
+# Communication style
+
+Be brief. Answer first, in 1-3 sentences. No essays, no long explanations unless Michael explicitly asks "why" or "explain". If a response needs structure, use short bullets, not paragraphs.
 
 # Bitbucket PRs
 
@@ -57,21 +58,21 @@ SQL
 
 | Field     | Value           |
 |-----------|-----------------|
-| Container | `redis`         |
+| Container | `redis-dev`     |
 | Host:Port | `localhost:6379`|
 | Auth      | none            |
 
 Run a command:
 ```bash
-docker exec -i redis redis-cli PING
-docker exec -i redis redis-cli KEYS '*'
+docker exec -i redis-dev redis-cli PING
+docker exec -i redis-dev redis-cli KEYS '*'
 ```
 
 ## CouchDB
 
 | Field     | Value                          |
 |-----------|--------------------------------|
-| Container | `couchdb-mobile-integration`   |
+| Container | `couchdb-dev`                  |
 | Base URL  | `http://localhost:5984`        |
 | Auth      | `aura` / `P@ssw0rd1` (basic)   |
 
