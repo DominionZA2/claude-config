@@ -2,6 +2,13 @@
 
 Be brief. Answer first, in 1-3 sentences. No essays, no long explanations unless Michael explicitly asks "why" or "explain". If a response needs structure, use short bullets, not paragraphs.
 
+# Cosmetic issues are issues
+
+Anything misleading on a surface Michael looks at — a wrong/irrelevant branch
+in a status bar, a stale label, confusing wording — is a real defect, not "just
+cosmetic". If he had to ask why, it already cost him time. Fix it or queue the
+fix; never wave it off.
+
 # Bitbucket PRs
 
 Repos on `bitbucket.org` use an Atlassian API token stored in Windows Credential Manager. Do NOT spend time probing env vars, `gh`, or asking the user — go straight to this recipe.
