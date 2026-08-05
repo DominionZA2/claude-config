@@ -36,7 +36,27 @@
       "Edit(//Users/michaelsmit/.claude/skills/**)",
       "Write(//Users/michaelsmit/.claude/skills/**)",
       "Edit(//Users/michaelsmit/ai-context/**)",
-      "Write(//Users/michaelsmit/ai-context/**)"
+      "Write(//Users/michaelsmit/ai-context/**)",
+      "Read(//private/tmp/**)",
+      "Edit(//private/tmp/**)",
+      "Write(//private/tmp/**)"
+    ],
+    "deny": [
+      "AskUserQuestion"
+    ],
+    "ask": [
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -f:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git clean -fdx:*)",
+      "Bash(git checkout -- :*)",
+      "Bash(git checkout .:*)",
+      "Bash(git restore :*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git stash drop:*)",
+      "Bash(git stash clear:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\msmit\\.claude",
@@ -62,7 +82,7 @@
       "C:\\source\\cloud_backend\\Tests\\Aura.Stock.Tests\\Processed"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -70,31 +90,6 @@
           {
             "type": "command",
             "command": "git -C \"/Users/michaelsmit/.claude/projects/-Users-michaelsmit-Source-v2-portal/memory\" pull --autostash -q 2>/dev/null &"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/context-threshold.py",
-            "timeout": 10,
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/context-threshold.py",
-            "timeout": 10,
-            "async": true
           }
         ]
       }
@@ -109,7 +104,8 @@
     "ralph-wiggum@claude-code-plugins": false,
     "plugin-dev@claude-code-plugins": true,
     "claude-supermemory@supermemory-plugins": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "vercel@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -120,7 +116,7 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
