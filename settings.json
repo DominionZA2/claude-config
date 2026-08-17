@@ -1,7 +1,8 @@
 {
   "env": {
+    "CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP": "1"
+    "CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT": "0"
   },
   "attribution": {
     "commit": "",
@@ -84,12 +85,33 @@
   },
   "model": "opus[1m]",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/michaelsmit/.claude/hooks/block-git-mutations.sh"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
             "command": "git -C \"/Users/michaelsmit/.claude/projects/-Users-michaelsmit-Source-v2-portal/memory\" pull --autostash -q 2>/dev/null &"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/michaelsmit/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
@@ -101,10 +123,10 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "ralph-wiggum@claude-code-plugins": false,
-    "plugin-dev@claude-code-plugins": true,
     "claude-supermemory@supermemory-plugins": true,
     "codex@openai-codex": true,
+    "plugin-dev@claude-code-plugins": true,
+    "ralph-wiggum@claude-code-plugins": false,
     "vercel@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
